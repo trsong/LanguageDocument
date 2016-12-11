@@ -1,0 +1,4527 @@
+************************************
+001-Jan6
+CS 241 Fundations of Sequential Programs
+Professor: Nomair Naeem
+ISA: Jordan
+Email: nanaeem@uwaterloo.ca;cs241@uwaterloo.ca
+
+Final: 50%
+Mid: 25%
+Assign x 11: 25% 
+
+Calendar:
+	Assignment 1 due F. Jan 17th
+	Assignment 2 due F. Jan 24th
+	Assignment 3 due F. Jan 31st
+	Assignment 4 due F. Feb 7th
+	Assignment 5 due F. Feb. 14th
+Reading Week
+	Assignment 6 due M. Feb. 24th
+Midterm: March 4th, 430 to 620 pm
+	Assignment 7 Due F. March 7th
+	Assignment 8 due F. March. 14th
+	Assignment 9 due F. March. 21
+	Assignment 10 due F. March. 28th
+	Assignment 11 due F. April. 4th
+
+Gossip: The prof came up a way to treat those top students, to distribute Chocolate! One Submisson 100 marks gets chocolates in the end!
+
+Textbook:
+1) Appel: modern compiler implementation in java pdf (also called the Red Book) 
+Url: https://compiladores-minijava-equipe10.googlecode.com/files/%5BCS%5D%20Modern%20Compiler%20Implementation%20in%20Java,%202nd%20ed.(Andrew%20Appel_%20Cambrdige%20University%20Press)(2004).pdf
+
+or 2) Appel: Modern Compiler Implementation in C
+Url: http://www.cs.princeton.edu/~appel/modern/basic/c/extract.pdf
+
+Follow on Course: CS 444 Compiler 
+
+_______________________________________________________________________________________
+Full Calendar:
+Week	Lecture Dates		Topics Notes
+I   	Jan.. 6, 8, 10		Machine Language No tutorials, no assignment due
+II  	Jan. 13,15, 17		Assembly Language Assignment 1 due F. Jan 17th
+III 	Jan. 20,22,24 		Assemblers Assignment 2 due F. Jan 24th
+IV  	Jan. 27, 29, 31 	Linking and Loading Assignment 3 due F. Jan 31st
+V   	Feb. 3, 5, 7 		Reglar Languages (RL) Assignment 4 due F. Feb 7th
+VI  	Feb. 10, 12, 14 	RL / Context Free Grammars Assignment 5 due F. Feb. 14th
+	Feb. 17 to 21 		Reading Week
+VII 	Feb. 24,26,28 		CFGs / Parsing Assignment 6 due M. Feb. 24th
+VIII	March. 3, 5, 7 		Parsing Midterm: March 4th, 430 to 620 pm
+				Assignment 7 Due F. March 7th
+IX	March. 10,12,14 	Parsing Assignment 8 due F. March. 14th
+X	March. 17,19,21 	Context Sensitive Analysis Assignment 9 due F. March. 21
+XI	March. 24, 26,28 	Code Generation (CG) Assignment 10 due F. March. 28th
+XII	March. 31, April 2, 4 	CG / Memory Management Assignment 11 due F. April. 4th
+_______________________________________________________________________________________
+Week1 Data Representation/ Machine Lang
+
+
+
+
+************************************
+002-Jan8
+__________________
+Sequential Program
+
+- runs instructions in the given sequence
+- not concurrent 
+- single thread of execution
+
+
+____________________________________________
+Descibe the relationship btw High level lang
+and machine-level \
+                    -> data representation
+    low-level     /
+
+
+___________________
+Assign Distribution
+
+Computer   -----------------------------------------> Data   Program
+		           ^ ^ ^
+	     		Abstraction
+
+Machine Lang(A1)  <----  Assembly Lang (A2) <---------- C,C++/Java/Scala/Scheme
+Binary             ^^^				^^^                 |
+   ^             Assembler		       Compiler             |
+   |  		  (A3-A4)                       (A6-A11)            |
+   |								    |
+    -----------------------------------------------------------------
+			^^^^^^
+			Compiler
+			(CS 444)
+
+
+1000011 can be:
+* 67 				unsign
+* 1 million and eleven		Decimal
+* part of an instruction	
+* ASCII: C			
+* -3 				Sign and magnitute
+* -61				two's compliment
+* mp3/video/finalexam.pdf
+- Depend on implementation
+
+
+ 1 0 0 0 0 1 1
+=1*10^6 + 1*10^1 + 1*10^0	Decimal
+
+Binary 1 0 0 0 0 1 1
+= 1*2^6 + 1*2^1 + 1*2^0
+= 67
+
+
+_____________________
+Hexadecimal (base 16)
+0 1 2 3 4 5 6 7 8 9 A B C D E F
+
+eg. convert 42(dec) to hex
+42 / 16 = 2 .... 10
+42(dec) = 0x0000002A
+
+eg. convert 0xF4A to dec
+0xF4A
+= F*16^2+4*16^1+A*16^0
+= 15*16^2+4*16+10*1
+= 3914
+
+eg. convert 11001010110100000100101100100001 to hex
+ ____ ____ ____ ____ ____ ____ ____ ____
+ 1100 1010 1101 0000 0100 1011 0010 0001
+ C    A    D    0    4    B    2    1
+= 0xCAD04B21
+
+
+________________
+Sign & Magnitude
+- MSB (most significant bit) is the sign (0 is + pos , 1 is - neg)
+- other bits give the magnitude
+
+eg. n = 3 gives 2^n numbers altogether (note: we have +0 and -0)
+000	+0		100	-0
+001	+1		101	-1
+010	+2		110	-2
+011	+3		111	-3
+Range from -3 to +3
+
+_____________________________
+2's compliment Representation
+Represent the negative number -b
+ad N - b where N = 2^ 7 ( # of bits)
+
+a - b
+a + (N - b) === congruent to a - b
+N - b = (N - 1 - b) + 1
+         ^^^^^^^^^^
+       flip bits in b
+
+That's why two's compliment is to flip bits and add 1.
+``````````````````````````````````````````````````````
+n = 3	 N = 2^3 = 8
+7 ---> 11
+
+ 1 1 1...........1 1 1
+-bn..............b2b1b0
+________________________
+bitwise NOT:
+flip bits in b
+
+_______________________________________
+eg.
+a = 7 
+b = -2
+a + b = 7-2  = 5
+N = 8
+n = 3
+
+a + (N - b) = 7 + (8 - 2) = 7 + 6 = 13 === 8
+
+13 - 8 = 5
+_________________________________________
+eg.
+-6	n = 4
+absolute value:	0110
+flip:		1001
+add1:		1010
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+************************************
+003-Jan10
+_________
+Last Time
+* decimal -> binary
+* binary -> hexadecimal
+* 2's complement Representation
+
+____
+MIPS: 32 bit, 64 bit
+      ``````
+All Registers are 32 bits long.
+
+Semantics: meaning/the effect of the instruction
+
+|-------------------------------|	|---------|
+| Control Unit	... >		|	| 8 bits  | 0x00000000
+| ALU		... >|32	|	|---------| 
+| PC		... >|bits 	|	|	  | 0x00000001
+| IR		... >| long	|	|---------|
+| hi	lo 	MAR 	MDR	|	|	  |
+|				|	|   ...	  |
+|				|	|	  |	
+|-------------------------------|	|---------|
+		CPU			   Memory
+
+-control unit:
+* controlling the sequence of instructions to execute
+* interpret(decode) an instruction
+* timing
+* interfacing with peripheral(not really important) devices
+
+-Arithmetic Logic Unit
+* computations
+* comparisons
+
+-Program Counter(PC)
+* store the address of the next instruction to execute  (store address)
+	    ````````       `````
+-Instruction Register(IR)
+* store the 32-bits representing the current instruction (store instruction)
+				     ```````
+-General Purpose Reguster (GPR)
+* 32 GPR each if them being 32 bits
+
+-Memory
+* 4 Gb
+* 0 ~ 2^32 -1
+
+_______
+Program
+
+- OS to execute your MIPS program
+- OS will use a tool called a loader to load your program into memory
+			      ``````                           ``````
+- loder loads the program starting at address 0
+- loader sets PC to 0
+__________________________
+Fetch-Decode-Execute Cycle
+psudo-code:
+1. while(true){
+2.	fetch		# IR <- MEM[PC]    (now instrcution register gets 32-bit word (4 slots , see Memory model))
+3.	increment	# PC <- PC + 4 	   (4 slots is 32-bits (4*8=32) )
+4.	decode		#
+5.	execute		#
+6. }
+
+Note:
+* MEM[PC] returns a 32-bit word starting at address given by PC
+
+	    	    Address
+	|---------|
+-->PC	| 8 bits  | 0x00000000     IR <- MEM[PC]  gets 4 slots at a time!
+	|---------|
+	| 8 bits  | 0x00000001
+	|---------| 
+	| 8 bits  | 0x00000002
+	|---------| 
+	| 8 bits  | 0x00000003
+	|---------|
+-->PC+4 | 8 bits  | 0x00000004
+	|---------|
+	| 8 bits  | 0x00000005
+	|---------|
+	| 8 bits  | 0x00000006
+	|---------| 
+	Actual Memory
+
+
+___
+ADD
+$d = $s + $t	d = s + t;
+MIPS command: add $d,$s,$t			it's  "d s t" order
+		   ````````
+000000 sssss ttttt ddddd 00000 100000		it's  "s t d" order
+       ^^^^^ ^^^^^ ^^^^^
+        $s    $t     $d
+5 bits is because we have 32 = 2^5 registers!
+
+Add the val in $5 to the val to $7, and put the result in $3.
+that is: add $3,$5,$7
+000000 00101 00011 00011 00000 100000
+       ^^^^^ ^^^^^ ^^^^^ ^^^^^
+        $5   $7     $3  padding shunt
+
+0000|0000|1010|0011|0001|1000|0010|0000
+hex: 00A71820
+.word 0x00A71820   00	00
+                        A7
+	   		18
+			20
+                   04
+
+
+
+
+
+
+
+
+************************************
+004-Jan13
+_________
+Last Time
+* MIPS procedure
+* PC: Program Counter
+* IR: Instruction Regesiter
+* 32 GPR(general purpose register), 32 bits
+
+add
+ 6           5    5     5      5        6
+______      _____ _____ _____ _____    ______  
+000000                                 100000
+operation   rs    rt     td   padding  function field
+code			  shamt(shift amount)  
+
+_____________
+Copying Values
+MIPS don't have MOV command. 
+Convention use $0 (always has 0).
+Copy value from $s to $8:
+	add $8,$3,$0  ; $8 <- $3 + $0
+
+000000 00011 00000 01000 00000 100000
+op     $3     $0    $8   shamt  func
+in hex:
+0000 0000 0110 0000 0100 0000 0010 0000
+=> .word 0x00604020
+
+_______________________________
+Clear a Register (set val to 0)
+add $3,$0,$0
+000000 00000 00000 00011 00000 100000
+op	$0    $0    $3   shamt  func
+in hex:
+0000 0000 0000 0000 0001 1000 0010 0000
+=> .word 0x00001820
+
+________________
+Exit the Program (.word 0x03e00008) 
+The last line of each program.
+    ````
+1. while(true){
+2. 	fetch
+3.	increment (PC<-PC+4)
+4.	decode
+5.	execute
+6.	}
+	________
+-Loader provides us with a "return" address
+-We should "GOTO" this address once the progress has finish
+-Stored in $31
+-Set PC to the return address
+-PC = $31
+MIPS cmd: jr $s
+which is Jump Register
+
+To exit: jr $31
+=> .word 0x03e00008
+
+Note: It's LEGAL to overwrite $31. But it got stuck. Once you overwrite $31. You must press ctrl-c to kill the program. Since the program is on the stack model, once you press ctrl-c your OS will restore the return address (value used to be in $31).
+
+_________________________
+Run Java command on Shell
+%> java cs241.wordasm   < input.hex  >output.mips
+	^^^^^^ ^^^^^^
+       package  class which contains a Main function
+
+In input.hex:
+- .word 0x........
+	  ^^^^^^^
+         32 bits hex
+eg. 
+.word 0x03e00008
+
+Note: output.mips is binary file, in order to look at it, use "xxd "
+
+%> java mips.twoints mycode.mips
+eg.
+trsong@ubuntu1204-006:~/cs241/Assn/A1/P3$ java mips.twoints *.mips
+Enter value for register 1: 1
+Enter value for register 2: 2
+Running MIPS program.
+MIPS program completed normally.
+$01 = 0x00000001   $02 = 0x00000002   $03 = 0x00000001   $04 = 0x00000002   
+$05 = 0x00000000   $06 = 0x00000000   $07 = 0x00000000   $08 = 0x00000000   
+$09 = 0x00000000   $10 = 0x00000000   $11 = 0x00000000   $12 = 0x00000000   
+$13 = 0x00000000   $14 = 0x00000000   $15 = 0x00000000   $16 = 0x00000000   
+$17 = 0x00000000   $18 = 0x00000000   $19 = 0x00000000   $20 = 0x00000000   
+$21 = 0x00000000   $22 = 0x00000000   $23 = 0x00000000   $24 = 0x00000000   
+$25 = 0x00000000   $26 = 0x00000000   $27 = 0x00000000   $28 = 0x00000000   
+$29 = 0x00000000   $30 = 0x01000000   $31 = 0x8123456c   
+
+eg.
+Add 42 to 52, store the result in $3.
+suppose 42 is in $1, 52 is in $2.
+**************
+add $3,$5,$7
+jr $31
+**************
+in hex:
+.word 0x00a71820
+.word 0x03e00008
+
+______________________
+Load Immediate & Skip
+what if in our last example , 42,52 not happen to be in register?
+
+*******
+lis $d	;$d=MEM[PC]; PC+=4
+*******
+bin: 0000 0000 0000 0000 dddd d000 0001 0100 
+
+Exmple: how to $5 <- 42
+*******
+lis $5	 ; load the following 4 bytes(1 word) and skip the next word
+.word 42  ; put the value to the current word
+*******
+lis $5
+bin: 0000 0000 0000 0000 0010 1000 0001 0100
+hex: 0x00002814
+
+.word 42
+bin: 0000 0000 0000 0000 0000 0000 0010 1010
+hex: 0x0000002a
+
+|----|
+| 00 |  
+|----|
+| 00 |
+|----|
+| 28 |
+|----|
+| 14 |
+|----|      
+| 00 |    <- PC ,  after load lis $5  PC is here 
+|----|
+| 00 |
+|----|
+| 00 |
+|----|
+| 2a |
+|----|
+|    |   <- PC + 4 , after execute lis $5 PC is here
+|----|
+         ___
+Note: do NOT worry about when executing lis $5, 42 is not in MEM. No! 42 is indeed in MEM.
+The thing is, each time before mips command get executed, it load each line of code in MEM in advance!
+						             ``````````````
+Also, the reason why in $d=MEM[PC]; PC+=4. It's PC + 4 not PC + 8 is because, after each line, PC will + 4 automatically.
+So, now we just need to + 4 once it will skip the next command.
+
+
+what if
+************
+lis $5		
+add $3,$5,$7
+************
+now, $5 = 0x00A71820 = A*16^5+7*16^4+...+0*16^0 = ... An integer
+Note: what GPR($5) store, must always be a number (not code even if it is code, it just convert everything into number)!
+Just like what PC points to must always be treated as code not data! 
+
+
+
+************************************
+005-Jan15
+__________
+Last time
+-add
+-sub
+-jr ,  jr $31 exist a program
+-lis 
+
+eg. Add 42 to 52 and store the result in $3.
+*****************
+0x00002814	;lis $5
+0x0000002A	;.word 42
+0x00003814	;lis $7
+0x00a71820	;.word 52
+0x03e00008	;jr $31
+
+|----|
+| 00 |   
+|----|
+| 00 |      lis $5
+|----|
+| 28 |
+|----|
+| 14 |
+|----|      
+| 00 |    <- PC ,  after fetch lis $5  PC is here (after increment)
+|----|			```````
+| 00 |
+|----|
+| 00 |	     .word 42
+|----|
+| 2a |
+|----|
+|    |   <- PC + 4 , after execute lis $5 PC is here
+|----|			   ```````
+
+
+while(true){
+	fetch (fetch 4 bytes)		IR<-MEM[PC]
+	increment			PC <- PC +4
+	decode	(look at the function field)
+	execute
+}
+
+
+Whenever you abstract over a lang, you need a tool whic hwill undo the abstraction.
+- Assembler
+
+%> java cs241.binasm <input.asm  >out.mips
+
+eg. Compute the absolute value of $1 ad store the result in $1.
+1. $2 = $1 < $0
+2. if ($2 == true)
+3.	$1 = $0 - $1
+4. else
+5.	do nothing
+6. jr $31
+
+slt: set less-than
+	slt $d,$s,$t
+Semantics: if $s < $t, $d = 1
+		else $d = 0
+slt $2,$1,$0
+if ($2==false,0),
+	do nothing
+else
+	sub $1,$0,$1
+jr $31
+
+psudo-code:
+slt $2,$1,$0
+if $2 == $0, skip 1 instruction
+	sub $1,$0,$1
+jr $31
+
+we use beq,
+beq: Branch on Equal
+	beq $s,$t,immediate
+  		   ^^^^^
+		   16 bit number of 2's complement Representation
+Semantics: if $s==$t, PC = PC + (i*4)
+(Remeber each time after we fetch one instruction, PC += 4 automatically)
+So, if we want to just skip the next line, we should just use
+beq $s,$t,1
+
+Example: Compute the sum 13+12+11+...+1+0 and store it in $3.
+
+Psudo-code:
+$3 = 0
+$2 = 13
+do {
+    $3 += $2
+    $2 -= 1
+} while ($2 != 0)
+jr $31
+
+Mips code:
+add $3,$0,$0
+lis $1
+.word -1
+lis $2
+.word 13 _____________________ loop go back to this line
+add $3,$3,$2
+add $2,$2,$1
+bne $2,$0,-3  -> for -3, update this everytime your loop body changes!  SO, we can use Labels!
+jr $31		<- after fetch bne, PC is pointing to this line.
+
+
+Mips code:
+add $3,$0,$0
+lis $1
+.word -1
+lis $2
+.word 13 
+begin:
+add $3,$3,$2
+add $2,$2,$1
+bne $2,$0,begin  -> go to begin
+jr $31		
+
+
+
+
+
+
+
+
+
+
+************************************
+006-Jan17
+_________
+Last time
+-lis
+-slt
+-beq
+-bne
+
+Mips code:
+add $3,$0,$0
+lis $1
+.word -1
+lis $2
+.word 13 
+begin654:
+add $3,$3,$2
+add $2,$2,$1
+bne $2,$0,begin654  -> go to begin654, after assemble, begin654 will become -3
+jr $31		
+
+
+Labels:
+Label definition creates a map between:
+	label name <-> address of the word immediatley after the def n.
+Notes: Labels only exist in assembly!!
+
+____________________
+Read/Write to memory
+_____________
+lw - Load Word
+Syntax: lw $t,i($s)
+Semantics: $t <- MEM[$s+i]
+load a word(4 bytes) from address $s plus some offset i to the register $t
+Note, $s + i is a address (corresponding to only 1 byte), but lw loads the following 4 bytes.
+i is a 2's complement in 2's complement representation.
+
+what if $s + i is not divisible by 4?
+Then we get Unaligned Access Exception.
+_______________
+sw - Store Word
+Syntax: sw $t,i($s)
+Semantics: MEM[$s+i] <- $t
+
+__________________________
+Wrtie output to the screen
+Special address: 0xffff000c
+- write (sw) something to address 0xffff000c
+- the least significant byte is output to the screen
+$1 = [ ][ ][ ][x](least significent byte)
+
+eg.
+lis $1
+.word 67
+lis $2
+.word 0xffff000c
+sw $1,0($2)
+(c will be print to screen)
+
+__________
+mult $s,$t
+- where did the result go?
+- what is the result ot multiplying 2, 32 bit values?
+- You will need 64 bits(2 registers) for the product
+- Put the result in two special registers
+[32bit $s] * [32 bit $t] = [         64 bit       ]
+                         = [32 bit $hi][32 bit $lo]
+
+mfhi $d
+- move from $hi to $d
+mflo $d
+- move from $lo to $d
+
+(In this course, we can promise that the result is always <32 bits, so just mflo is enough).
+
+Note: use multu for unsigned int
+
+_________
+div $s,$t
+Semantics: 
+lo <- $s / $t
+hi <- $s % $t
+
+also use mfhi,and mflo to get the value.
+
+
+
+Ex.
+$1 contains the start address of an array containing 32 bit values.
+
+|----|
+|    |   
+|----|
+|8bit|  <- suppose $1 = 40  	 element 0 - 40~43
+|----|					 1 - 44~47
+| 41 |					 2 - 48~51
+|----|					 3 - 52~55
+| 42 |
+|----|      
+| 43 |    
+|----|			
+|    | <- $1 + 4
+|----|
+|    |	    
+|----|
+|    |
+|----|
+|    |   
+|----|	
+
+- Put in $3 the value array[3] (in address 52~55)
+52 = 40 + 12
+   = 40 + 3(4)
+	  ^ ^
+      index  sizeof a word
+Notes:
+elem[0] is $1 + 0
+elem[1] is $1 + 1(4)
+elem[2] is $1 + 2(4)
+elem[3] is $1 + 3(4)
+
+******************
+lis $5
+.word 3
+lis $4
+.word 4
+milt $4,$5
+mfo $6
+add $7,$1,$6
+lw $3,0($7)
+jr $31
+******************
+Above code is to sw in array[3].
+
+__________
+Procedures
+main(){
+	call some mips code
+	go back
+}
+
+- what sequence of instruction result in a call and return 
+- how to reserve register values
+Google "HBI"
+
+ 
+************************************
+007-Jan20
+_________
+Last Time
+lw/sw
+Procedures in Assembly (can we distribute all the registers? in order to implement the procedure)
+* Call a procedure, then return from it
+* Preserve register values
+* Restrict each procedure to use a subset of registers
+- Recursion will conquer it. Then we willl definition use memory to solve it!
+_______________
+use free Memory(RAM)
+    ````
+- $30 points to JUST PAST last word in free memory
+- Calle stores(preserves) registers that it use
+
+	main		foo		bar
+	...
+	...
+	...
+	call foo -------> store $1
+			  store $2
+			foo:
+			  use $1
+			  use $2
+			call bar --------> store $2
+					   store $3
+					bar:
+					   use $2
+					   use $3
+					   return
+					   ....
+					   restore $2
+					   restore
+	 	      restore$1 <----------return back
+		      restore$2
+	return <------return back
+
+
+
+- use free memory in LIFO(last in first out) mode ,ie, as a stack
+- $30 is our stack pointer
+  ````````````````````````
+* push: place a value at Top of Stack
+* pop: remove a value from the Top of Stack
+
+eg. Push $5
+sw $5,-4($30)
+lis $5
+.word 4
+sub $30,$30,$5
+sw $1,-4($30)
+sw $2, -8($30)
+lis $2
+.word 8
+sub $30,$30,$2
+                       address
+|--------------------| 0
+|		     | 1
+|	code	     | 2
+|		     |
+|--------------------| .
+|		     | .
+|		     | .
+|		     | .
+|		     | .
+|		     | .
+|		     | .
+|push goes here	     | $30 -4 
+|		     |
+|		     | 
+|		     |
+|		     | $30 = stack pointer
+----------------------
+
+_______________
+so from now on:
+we use
+push $5 (code NOT EXIST in assembly lang, it is just a short cut!) 
+```````
+as an abstraction of:
+***************
+sw $5, -4($30)
+lis 5
+.word 4
+sub $30,$30,$5
+***************
+
+
+we use
+pop $2 (code NOT EXIST in assembly lang, is is just a short cut!)
+``````
+as an abstraction of:
+****************
+lis $2
+.word 4
+add $30,$30,$2
+lw $2,-4($30)
+****************
+
+___________
+Approach 1:
+main:
+......
+......
+......
+beq $0,$0,foo ;unconditional branch
+
+foo:
+......
+......
+......
+beq $0,$0,bar
+
+bar:
+......
+......
+......
+beq $0,$0,foo
+
+This does lead to infinite loop!
+
+______________________
+Jump and Link register
+syntax: jalr $s
+semantics: $31 <- PC , PC <- $1 
+
+___________
+Approach 2:
+main:
+......
+......
+......
+push $31
+lis $1
+.word foo ;each time assembler meet with foo, it will replace it with the address (binaray) of foo
+jalr $1
+pop $31
+
+foo:
+......
+......
+......
+jr $31
+
+
+Note: 
+- make sure you match your pushes with your pops
+- Make sure you pop in the same order as you pushed
+
+
+
+************************************
+008-Jan22
+_________
+Last Time
+- call and return (jalr)
+- preserving register values 
+callers		callee
+saves		saves
+
+________________________
+Templelate for procedure
+
+main:
+.....
+push $31
+lis $1
+.word proc
+jalr $1
+pop $31
+
+
+proc:
+.... ;push register used
+
+;;********************
+;; code for proc
+;;********************
+
+.... ;pop register used
+jr $31
+
+eg.
+if I want to convert the following code to a procedure:
+; $2 contains N
+add $3,$0,$0
+lis $1
+.word -1
+beginloop:
+add $3,$3,$2
+add $2,$2,$1
+bne $2,$0,beginloop
+
+-------------------------
+Here's the final code:
+
+Main:
+....
+push $31
+lis $2
+.word 13
+lis $1
+.word sumNTOOne
+jalr $1 ;now $3 has the result of sunNToOne($2==13)
+pop $31
+jr $31
+
+;expect $2 contains N
+;output in $3
+sumNToOne:
+sw $1,-4($30)	;push $1
+sw $2,-8($30)	;push $2
+lis $1
+.word 8
+sub $30,$30,$1 ;update $30
+
+add $3,$0,$0
+lis $1
+.word -1
+beginloop:
+add $3,$3,$2
+add $2,$2,$1
+bne $2,$0,beginloop
+
+lis $1
+.word 8
+add $30,$30,$1	;update $30
+lw $1,-4($30)	;pop $1
+lw $3,-8($30)	;pop $3
+
+jr $31
+
+_________
+Assembler
+
+- Reads one line: String
+add $1,$2,$3
+* Tokenize:
+ break a string into smaller pieces based on some delimites.
+ add $1,$2,$3
+ ^^^ ^^^^^^^^
+-> called scanner
+The following must be identify by scanner:
+1) add, slt , ....., ID  Kind
+2) $1,$0,$01,$52, .... , REG
+3) label: ...... 
+abc:....
+a1b:.....
+abc1234:....
+LABELS
+4) , COMMA
+5) ( LPAREN
+6) ) RPAREN
+7) 42, 0x34, 0xffff000c   INT
+
+line -> Token[] -> Object 
+
+Object:
+Kind : enum
+lexeme: String
+
+______________
+Uses of Labels
+1) .word label
+2) beq $0,$0, label
+___________
+.word label
+Return Memory address of the instruction right after the label defn.
+
+
+
+
+
+
+************************************
+009-Jan24
+input: Assembly text file
+output: MIPS binary
+
+Step1: tokenize each line (First, scan. Then do lexical Analysis.)
+SCANNER generate a list of TOKEN[]
+___  __    _   __    _   __
+add  $1    ,   $2    ,   $3
+ID   REG COMMA REG COMMA REG
+
+Token:
+kind: enum
+lexeme: string
+
+After you finish tokenizing, you should do error checking (syntax checking)
+
+________________________
+Error checking of report
+* invalid OpCode -> Runtime Error (assembler do not care about)
+eg.  unaligned access
+lis $1
+.word 33
+sw $1,0($31)
+This will lead to runtime error in the future.
+Smart assembler will detect this potiential runtime error. This is called Program Analysis/Verification.
+Which is beyond the scope of this course. (we should not care about it right now.)
+
+* syntax check
+if(token[0].kind == 11 & token[0].lexeme == "add")
+- it is easier to check for correct syntax than to check everything that can go wrong
+eg. expected REG got immediate 
+
+
+______
+LABELS
+check:
+- dubplicate labels
+- undefined labels
+- calculating offsets
+
+
+______
+Range
+beq $0,$0, i
+	   ^
+i is 16 bit signed 2s complement
+-32768 ~ 32767
+check the range of immediate.
+
+ 
+____________
+Use of Label
+1) .word <label>
+2) beq $0,$1, <label>
+
+1) .word <label>
+we will replace <label> with "Address of the instruction following the definition of the label".
+Note: since assembler is not really "run" this program, we do not have a PC.
+      So, in order to get the address, we need to implement a vitual PC , start by address at 0x0000
+
+		address 	address in dec					      `````````
+add ..........	0x00000000	0
+slt ..........  0x00000004	4
+foo:	
+beq $.........  0x00000008	8
+a:
+.word a		0x0000000c	12
+.word foo	0x00000010	16
+
+in this case, a:12 foo:8
+map: <label,address>
+<foo,8>
+<a,12>
+
+This is called a symbol table.
+			   ______
+But, what if Label is used before its definition.
+we can scan the code twice.
+First roud, creating symbol table and tokenize everything and restore it into memory.
+
+
+
+
+
+
+
+
+************************************
+010-Jan27
+_________
+Last Time
+- one pass assembler is probably not going to work
+- want to use a label before it's defined
+Symbol Table:
+	label -> address in memory
+Two pass assembler
+-> create the symbol table in pass1
+______
+Pass1:
+-> Tokenize
+	vector<vector<Token>>
+-> Symbol Table
+[syntax checking] (remember to syntax checking in pass1)
+______
+Pass2:
+- check for label use
+- generate output
+
+____________
+Symbol Table
+label -> address 
+-> Program Counter (Virtual)
+- pointing to the next instruction
+-> count numbers of instruction/.word that we have seen so far
+
+loop:
+	....
+	....
+	...
+	beq $0,$1,loop
+pc->.....
+
+the immediate beq should consume is = (Defn-pc)/4
+
+
+labes instruction comment
+foo: a: bar: add $1,$2,$3
+-> labels on the same line get the same address
+__________
+Left Shift
+- multiplication by 2
+0000 1101
+i<<2;
+0011 0100
+
+___________
+Right shift
+- Division by 2
+0000 1101
+i>>2;
+0000 0011
+
+c++, char , cout
+c++, use putchar()
+scheme, write-byte
+java, system.out.write
+
+ 
+____________
+add $3,$2,$4
+int opcode = 0
+int d=3
+int s=2
+int t=4
+int funcitonField=32
+
+int inst = some combination of left shift, bitwise OR, & bitwise AND
+************************************
+011-Jan29
+c++:
+int inst = 0x03e00008;
+cout << inst;
+
+Screen:
+65011720 (decimal value)
+-> cout with int - output decimal value - the ascii representation
+output:
+00000110 001110101 00110000 ....
+^          ^           ^
+54   	   53          48
+It's the asciii representation:
+650 .....
+
+-> cout with char will actually print that char (also useful to use putchar())
+char temp = 48;
+cout << temp;
+screen: 0
+xxd: 00110000
+
+void intToChar(inst){
+	cout << (char)(inst >> 24)
+	cout << (char) (inst >> 16)
+	cout << (char) (inst >> 8)
+	cout << (char) (inst >> 4)
+}
+
+
+add $3,$2,$4
+												
+int opCode = 0; 0000 0000 0000 0000 0000 0000 0000 0000
+int s =  2;     0000 0000 0000 0000 0000 0000 0000 0010
+int t =	4;		0000 0000 0000 0000 0000 0000 0000 0100
+int d =	3;		0000 0000 0000 0000 0000 0000 0000 0110
+int shamt = 0
+int functionField = 32
+				0000 0000 0000 0000 0000 0000 0010 0000
+
+int inst = (opCode << 26)|(s <<21) | (t << 16) | (d << 11) | (shamt << 6) | functionField.
+
+eg. 
+beq $1,$2,label
+then it turns out to be 
+beq $1,$2,-3
+
+int opCode = 4;
+int s = 1;
+int t = 2;
+int i = -3;
+
+int inst = (opCode << 26)|(s<<21)|(t<<16)|i;
+but i is in two's complement
+1111 1111 1111 1111 1111 1111 1111 1101
+which is 32-bit long.
+
+just use bit-wise &
+ 1111 1111 1111 1111 1111 1111 1111 1101
+&0000 0000 0000 0000 1111 1111 1111 1111
+----------------------------------------
+ 0000 0000 0000 0000 1111 1111 1111 1101
+
+Answer: int inst = (opCode << 26)|(s<<21)|(t<<16)|(i&0x0000ffff);
+
+______
+LOADER
+Assumption: program is loaded at address 0.
+Assembler: assume that start address was 0.
+-> what lines of assembly code are effected by this?
+-> we want the loader to fix the "defects" in our output binary.
+			-> How does the assemblers tell the loaders which lines to fix.
+"fix" : Relocation
+
+
+
+
+************************************
+012-Jan31
+_________
+Last Time
+Finished discussing the assembler
+
+MIPS assembly -> mips binary ->  
+	      ^		     ^
+  	    Assembler	    Loader
+___________
+Loader v1.0
+N = # of instructions
+for (i=0;i<N;i++){
+  MEM[4i] = FILE[i]
+}
+
+- Don't want to assume that the program is always loaded at 0.
+- The loader should be able to load the program at any start address, say ALPHA
+
+___________
+Loader v2.0
+N = # of instruction plus space for stack, heap
+ALPHA = start addree of N sequential bytes of available memory
+for(i = 0; i<# instructions; i++){
+   MEM[ALPHA + 4i] = FILE[i]
+}
+
+"All labels points to the wrong place"
+If you use a label in a .word
+	-> when you see a .word <LABEL> you output the address of this label.
+
+Is there anything else that become wrong if we load at some ALPHA other than 0.
+- NO!
+what about beq?
+beq $3,$4,label
+	   ^
+	  we just compute the offset of (target - current - 1 )/4
+
+So, the only issue is .word <LABEL>, and if we can "fix" it, our loader can load at any ALPHA.
+
+The fix is to add ALHA to any .word <LABEL>.
+The loader should find all the .word <LABEL> and add ALPHA to each
+-> BUT the loader does not know which 32-bit sequence came from a  .word <LABEL>
+
+-> The assembler needs to tell the loader where these relocation entries are.
+-> Output the address corresponding to relocation entries
+-> Put the relocation table after the code:
+
+Assembler tells the loader the start and end address of the tabel
+
+-> we are not just output MIPS binary.
+-> we also output meta-data
+- header(3 words)
+- table
+  -> relocation entries
+  -> linker entries.
+
+************************************
+013-Feb3
+__________
+Last Time
+- Do away with the assumption that the start address is always 0
+- One assembler needs to provide more info to the loaders
+ - Relocation Table
+  - list of addresses of locations in the output that contained a .word <label>
+* We assume that we have a loader capable of understanding MERL spec 
+* We assume we don't have an assembler to output the MERL spec eg. cs241.binasm
+* manually write assembly to generate a relocatable module using binasm
+
+lis $3
+.word 0xabc
+lis $1
+.word A
+jr $1
+B: jr $31
+A: beq $0,$0,B
+.word B
+
+step1: create new labels for each location containing a .word <label>
+
+lis $3
+.word 0xabc
+lis $1
+reloc1: .word A
+jr $1
+B: jr $31
+A: beq $0,$0,B
+reloc2: .word B
+
+step2: mark end of code
+step3: create relocation entries according to the MERL specification
+
+lis $3
+.word 0xabc
+lis $1
+reloc1: .word A
+jr $1
+B: jr $31
+A: beq $0,$0,B
+reloc2: .word B
+endCode: .word 1
+	.word reloc1
+	.word 1
+	.word reloc2
+
+
+Step4: mark end of module
+
+lis $3
+.word 0xabc
+lis $1
+reloc1: .word A
+jr $1
+B: jr $31
+A: beq $0,$0,B
+reloc2: .word B
+endCode: .word 1
+	.word reloc1
+	.word 1
+	.word reloc2
+endModule:
+
+Step5: add MERL header
+
+beq $0,$0,2
+.word endModule
+.word endCode
+
+lis $3
+.word 0xabc
+lis $1
+reloc1: .word A
+jr $1
+B: jr $31
+A: beq $0,$0,B
+reloc2: .word B
+endCode: .word 1
+	.word reloc1
+	.word 1
+	.word reloc2
+endModule:
+_________
+FinalCode
+Virtual Add.    Assembler Code 		Real Address
+0x00		beq $0,$0,2		ALPHA 		0x10000002		
+0x04		.word endModule		ALPHA + 0x04	0x0000003c
+0x08		.word endCode		ALPHA + 0x08	0x0000002c
+0x0c		lis $3					0x00001814
+0x10		.word 0xabc		.....		0x00000abc
+0x14		lis $1					0x00000814
+0x18		reloc1: .word A				0x00000024
+0x1c		jr $1			ALPHA + virAddr	0x00200008
+0x20		B: jr $31				0x03e00008
+0x24		A: beq $0,$0,B				0x1600fffe
+0x28		reloc2: .word B				0x00000020
+0x2c		endCode: .word 1			0x00000001
+0x30			.word reloc1			0x00000018
+0x34			.word 1				0x00000001
+0x38			.word reloc2			0x00000028
+0x3c		endModule:
+
+
+_____________
+What it does?
+* load the program starting at ALPHA
+* 
+ Start Address	<- ALPHA + MEM[ALPHA + 8]
+ End Address   <- ALPHA + MEM[ALPHA + 4]
+ while(startAddress < endAddress){
+     if(MEM[startAddress]==1){
+         MEM[ALPHA + MEM[startAddress + 4]] += ALPHA	//read the addresss in the next line of .word 1, load that addr, and increase by ALPHA
+	 startAddress += 8				// move to the next .word 1
+     }
+ }
+ 
+
+************************************
+014-Feb5
+________
+Linkers
+- be able to write code in multiple files
+	- reusable libraries
+	- team development
+-> Our assembler is going to see labels that are not defined in that file
+-> cat one.asm two.asm | java cs241.binasm
+   will work but it require re-complie
+-> "separate compilation"
+-> assemble individual files and then merge them
+-> assemble individual files into relocatable files(MERL) and then merge them
+
+--------- 	 ------------------------
+| code1 | -----> | header1 code1 table1 | \		header1
+---------  ^^^	 ------------------------  \		code1
+     cs241.realasm			    \		------
+				  	   cat->>>  	table1
+  					    /		-------
+--------- 	 ------------------------  /		header2
+| code2 | -----> | header2 code2 table2 | /		code2
+---------  ^^^	 ------------------------		-------
+     cs241.realasm					table2
+
+
+Need a tool to merge two MERL files
+-> A linker
+
+header 
+code1
+code2
+table
+
+Issue: how do we resolve labels are not defined in the file
+Assembler Directive: .import <label>
+-> This tells the assemblers that your code uses <label> which is not defined in this file
+The assembler does the following when encoutering a .word <label>
+* check the symbol table for <label>
+if it was defined, output the address
+if not defined check for an import
+	check for an import
+		if not found, OUTPUT ERROR
+		if it is found, OUTPUT an External Symbol Reference (ESR) in the MERL table
+
+
+
+eg.
+import proc 
+lis $1
+.word proc
+
+-------------
+
+header
+--------
+code
+endCode:
+--------
+.word 0x11	 <- MERL code for an ESR
+.word address of where label is used
+.word # of characters in label, n					MERL footer
+.word ASCII value for Character 1 ,(p)
+.word ASCII value for Character 2 ,(r)
+.word ASCII value for Character 3 ,(o)
+....
+.word ASCII value for Character n,(c)
+
+
+.import proc ->>>	.export proc ->>>>>	proc:
+			proc:
+
+generate: ESD		Generate ESR 		Generate:ESD
+
+Assembler Directive: .export <label>
+Onw way of telling the assembler that this label an be used to resolve ESR
+-> External Symbol Definition(ESD).
+head:
+code:
+.word 0x05 	;MERL code for ESD
+.word address of where label is defined
+.word ascii for the first char
+.word ascii for the second char
+...
+.word ascii for the n-th char
+
+
+
+
+************************************
+016-Feb10
+________________
+Formal Languages
+- A mathematically precise way of specifying what a language is
+- Do not want to use an implementation
+(assembler/compliers) as a specification for the language
+Goal: give an input program, we should be able to give an mathematical proof(CS360) using formal language
+specification whether the program staifies the specification
+___________
+Definitions
+
+Alphabet(Sigma): a finite set of symbols
+eg. {0,1} the Alphabet for binary, {0,1,...,8,9}, {a,b,...,z}
+
+Words(w): a finite sequence of symbols from Sigma(some Alphabet)
+101110 : word using alphabet {0,1}
+1924 : .... using {0,1,2,...9}
+hello: .... using {a,..,z}
+Special Word: epsilon, which is not a word in any alphabet,but it represent the empty word
+
+Language(L): a possibly infinite set of words
+eg. L = {all binary strings of length 5}
+    L = {}  ---- empty language, 0 number of words
+    L = {epsilon} ---- language containing one word, the empty word
+
+Recognition: a decision algorithm that takes the specification and an input program, yes/no the program satisfies the spec. true/false
+
+L = {a^(2n) b, n>=0} -easy
+L = {all valid MIPIS assembly programs} - slightly harder: MIPIS assembler: note, it not only contains a recognition, but also contains a translater
+L = {all valid Java Program} - more harder
+We will classify Language based on how hard it is to recognize a word from the language.
+ 
+From easier to harder to recognize:
+* finite languages
+* regular languages: DFA
+* context free languages: used to implement a parser
+* context sensitive language:
+* recursive
+* undecidable (there's no recognitions for it, cannnot even decide whether it is valid.)
+________________
+Finite languages
+- finite set of words
+Specification: list of all the words in the language
+Recognition: match the input word against all words in the language.
+eg. L = {all valid MIPS operations} ,like add,sub,mult,....,beq,...
+_________________
+Regular Languages
+A regular is regular if it can be specified using a 
+1) regular expression
+2) Deterministic Finite Automata (DFA)
+3) Non-deterministic Finite Automata (NFA)
+
+- Implement a Scanner using a DFA
+___________________
+Components of a DFA
+-> states 			 circles ()
+-> transitions between states  	 arrows ->
+-> unique start state 		->()
+-> accepting/final states 	(())
+
+A DFA is a 5-tuple (Sigma,Q,q0,A,delta)
+Sigma: Alphabet
+Q: finite set of states
+q0: start state (only one - unique, q0 in Q)
+A: set of accept states (Q contains A)
+delta: Transition function:	delta: Q x Sigma -> Q
+
+->(X) ->((y)) <-> 
+      a        a
+
+Sigma = {a}
+Q = {x,y}
+q0 = x
+a = {y}
+delta(x,a) = y
+delta(y,a) = y
+ 
+
+
+
+
+************************************
+017-Feb12
+________
+Example1
+Sigma = {a,b}
+L = {all words with odd number of as}
+
+o is accepted, x is denied
+epsilon - x
+a - o
+aa - x
+aaa - o
+   b      b
+->() -> (())
+  ^  a   |
+  |-------
+    a
+
+jump back and forth, the we will get all odd number of a's
+when encouter b, just go back to itself
+
+________
+Example2
+Sigma = {0,1}
+L = {all words with even length}
+         0,1
+->(())  <-> ()
+
+->(()) 0-> <-0 ()
+   1		1
+   |	        |
+   v		v
+   ^            ^
+   |		|
+   1            1
+  () 0-> <-0 (())
+
+There can be multiple DFAs for the same language.
+One way of seperate them is to give a string that produce different outputs.
+
+________
+Example3
+Sigma = {$,0,1,...,9}
+L = {all valid MIPS register}
+      $0 - $31
+
+->() -> () <-> 9
+     $ 
+simple DFA more takes after tokenize. (need to exam the lexeme)
+
+
+->() $-> () ->3 (()) -> 0,1 (())
+         |
+          - -> 1,2 (()) -> 0-9 (())
+         |
+          - -> 0,4-9 (())
+A complex DFA, no takes after. (However, it is not a valid DFA, a state must be able to handle all input)
+
+Choice is yours!
+
+
+-Assume the presence of an error state
+
+
+
+->() $-> () ->3 (()) -> 0,1 (())
+         |
+          - -> 1,2 (()) -> 0-9 (())
+         |
+          - -> 0,4-9 (())
+ ->all-other-input (error)
+
+- Define a transition to the error state on all remaining symbol
+- Once in the error state you stay in the error state
+- when drawing DFAs you can ignore the error state (in CS241)
+
+
+(A5 Bonus Question)
+DFA recognition Algorithm
+input: DFA(Sigma,Q,q0,A,delta)
+input a word w: a1 a2 a3..... an such that ai is in Sigma  (all symbol is from alphabet, 'cause if is not in alphabet, how can it be valid?)
+
+state <- q0
+for i in 1 to n
+    state <- delta(state,ai)
+    if state is in A, retrun true 	// A is accepting state
+    else return false
+
+(look at the given code asm.c see how the DFA for MIPS works)
+
+_______
+Example
+Sigma = {0,1}
+L = {all binary number with no useless(leading) zeros} 
+      0,1,10,11,100.......
+
+->() ->0 (())		
+   |
+    --> 1(()) <->0,1
+
+
+->() ->0/n=0 (())		-> we can associate actions with ransitions.
+   |
+    --> 1/n=1 (()) <->0 / n=2n
+                   <->1 / n=2n+1
+
+for 0, set n=0		for 0, set n =2n
+for 1, set n=1		for 1, set n= 2n+1
+
+eg. input 101
+1	n=1
+0	n=2(1)=2
+1	n=2(2)+1=5
+
+So, the above associate actions calculate the decimal value of the binary number.
+The example tells us, we may use the associate actions to do something else ,eg. generate tokens
+
+
+* A word is accepted by the DFA if the recognition algorithm returns true.
+* The language specified by the DFA is the set of words accepted by the DFA.
+* A language is regular if there exists a DFA for it.
+			         ``````
+(A DFA for a language means it is regular!)
+
+
+
+************************************
+018-Feb14
+________
+Scanning
+-> chop up an input string into a sequence of tokens
+
+Scannes input
+	string w
+
+input: DFA(Sigma,Q,q0,A,sigma)
+output: w1 w2 w3 ... wn
+	where wi in L
+
+--------------------------------------
+-> Run the DFA on the input
+  until we match a token
+	````````````````
+- output a token 
+- reset DFA (state <- q0)
+- repeat until End of Input
+
+How to decide when to match a token?
+
+Sigma = {a}
+L = {aa,aaa}
+
+->() ->a () ->a(()) ->a (())
+
+w =   aaaaa
+token:AA AAA
+
+w =   aaaaa
+token:AAA AA
+
+How can we decide? 
+which only produce one way to tokenize.
+       ________________
+We use Greedy Algorithm: choosing the longest word that matches(is accepted).
+
+Issue: what if w=aaaa
+	         AAA  -> error, no tokenization available.
+The only way to avoid this is to use space: w= aa aa
+_______________________
+Maximal Munch Algorithm
+- unique tokenization
+- known to fail under certain condition
+
+-> Run the DFA for the language until stuck.
+  -> if stuck at non-accepting state
+	backtrack the DFA & the input until last seen accepting state
+        (if still not found, output error)
+ -> if at accept state
+	1. output token
+	2. reset DFA
+	3. exit if end of input
+	4. repeat
+- Algorithm is quadratic in worst case.
+suppose we have n states
+-> () ->(()) -> (()) -> (()) .... ->(())
+ each time back-tracking to the front:
+
+n + n-1 + n-2 + .... + 1
+= (n(n+1))/2
+O(n^2)
+
+In real life, C compiler:
+
+x = y/*z
+       _ _ _ __ _
+token: x = y /* z
+	     ^
+             start of comment
+
+or we can use space to avoid:
+
+x = y/ *z
+or x = y/ (*z)
+       _ _ _ _ ___
+token: x = y / *z
+
+
+In real life, C++ compiler:
+List< List<node>>
+	       ^^
+Issue is here: >> right shift
+we just put a space between > and >:
+List< List<node> >
+
+Until C++11,
+it treat >> as two tokens: > and >.
+
+
+(In CS241 we will not implement qudratic Munch, we implement linear Munch)
+_______________________
+Simplifid Maximal Munch (no back-tracking)
+input string w
+input DFA(Sigma,Q,q0,A,delta)
+output: w1 w2 ..... wn such that 
+       w1w2...wn= w
+-> for each i, wi is the longest matching prefix from wi wi+1 ... wn
+ i<-0
+ state<-q0
+ loop
+     if(delta(state,i-th char of w)) is defined,
+	state<-delta(state,i-th char of w)
+     else
+	// no transition possible, stuck
+	if state not in A
+	    return error
+	else		// state in A, accepting state
+	    1. output token corresponding
+	    2. state <- q0
+	    3. if end of input, exit loop
+	endif
+     endif
+ endloo[
+
+____
+WLPP - Water Language Plus Pointers (no procedures)
+- A WLPP program is a valid c++ function named wain
+  - 2 parameters
+	param1: int/int*
+	param2: int
+  Return type: int
+Constraction: last statement has to be returned, no other returns
+- no for-loop, do do-while
+- only while
+- if (cond) {
+     ...
+  }
+  else{
+    ...
+ }                          _______
+Even if, no else, you still have to add else to it!
+
+Tips: copy a3 DFA to A6p3-4 by replace WLPP DFA by MIPS DFA
+
+
+
+
+************************************
+019-Feb24
+_________________
+Regular Languages
+Deterministic Finite Automata (DFA)
+-> Scanning 
+	L1 = all decimal values with no leading zeros
+	->() ->0 (())
+            \
+	     ->1-9 (()) <-> 0-9
+	L2 = all valid hexadecimal values starting with 0x
+	-> () ->0 () ->x () ->0-9,A-F (()) <-> 0-9,A-F
+
+we want to define a language L = L1 union L2
+
+-> () ->0 (())
+     |
+     -->1-9 (()) <-> 0-9
+     |
+     --->0 () ->x () -> 0-9,A-F (()) <-> 0-9,A-F
+
+It is ambiguous. 
+It is called Non-deterministic Finite Automata (NFA)
+-> we have a choice of which patch to take.
+How do we choose which state to go to?
+-> We do NOT make a decision.
+-> We will go/explore ALL paths!
+-> Maintain a set of current states
+
+-> Transition to a new set of current states by transitioning each state with the next symbol.
+-> if some state gets stuck (No transition on the next symbol), throw away that state
+-> if current states become empty, output false/no/error (depending on how you implement)
+-> if you end up at an accept state, output true/yes
+
+
+Any valid NFA can always convert to DFA! (Vice Versa!)
+````````````````````````````````````````	      
+That is DFA <=> NFA!
+
+________________________
+NFA (Sigma,Q,q0,A,sigma(changed))
+Sigma = set of alphabet
+Q = finite set of states
+q0 = unique start state
+A = set of accept state
+sigma: Q x Sigma -> P(Q)			          ___
+Note: instead of returning one state. this sigm returns a set of states!
+
+___________
+Comparasion
+
+Recognition DFA
+input: w = a1 a2 ... an, ai in Sigma
+inpu: DFA (Sigma,Q,q0,A,sigma)
+output: true/false is w in the language specified by the DFA
+************************************
+state <- q0
+   for i in 1 to n
+	state <- delta(state,ai)
+   end 
+   if state in A, return true
+   else 
+      return false 
+***************************************
+
+Recognition NFA
+input: w = a1 a2 ... an, ai in Sigma
+inpu: NFA (Sigma,Q,q0,A,sigma)
+output: true/false is w in the language specified by the DFA
+*****************************************************
+states <- {q0}
+   for i in 1 to n
+	state <- Union(for s in states) delta(s,ai)
+   end 
+   if (state Intersection A) != Empty, return true
+   else 
+      return false 
+******************************************************
+
+
+_______
+Example
+	L1 = all decimal values with no leading zeros
+	->() ->0 (())
+            \
+	     ->1-9 (()) <-> 0-9
+	L2 = all valid hexadecimal values starting with 0x
+	-> () ->0 () ->x () ->0-9,A-F (()) <-> 0-9,A-F
+
+we create a new start state, conect the new start state to the existing start states.
+
+
+->(1)->epsilon (2) ->0 (())
+   |              \
+   |   	           ->1-9 (()) <-> 0-9
+   |
+   ->epsilon (3) ->0 () ->x () ->0-9,A-F (()) <-> 0-9,A-F
+
+This is called epsilon-trasition which are free pass to move to the next state - using to input.
+
+
+___________
+epsilon-NFA
+An NFA containing epsilon transition is called epsilon-NFA.
+epsilon-closure(s) = set of states that are reachable using 0 as more epsilon transition
+ 		^
+              set of states
+
+epsilon-closure({q0}) = epsilon-closure({1}) = {1,2,3}
+
+
+_______
+Example
+Sigma = {a,b,c}
+L1 = {cab}
+L2 = {even number of a's}
+
+
+->(1) ->epsilon ((6)) <->b,c      a<->a   (7) <->b,c
+      \
+       -> epsilon (2) ->c (3) ->a (4) ->b ((5))
+
+
+Walkthrough:
+
+seen input		unread input		current states
+epsilon			caba			{1,2,6}
+c			aba			{3,6}
+ca			ba			{4,7}
+cab			a			{5,7}
+caba			epsilon			{6}
+
+since the current state {6}, ({6} intersection {5,6}(accepting state) != {}), return true.
+
+
+
+                
+
+
+
+************************************
+020-Feb26
+_________
+Last Time
+* NFA
+ Key for recognition: maintain a set of current states
+* epsilon-NFA
+ epsilon-transitions: free pass to the next state
+ epsilon-closure(s) = set of states that are reachable from the states in S using 0 or more e-transitions
+
+
+_________________________________
+epsilon-NFA recognition Algorithm
+input w: a1 a2 a3 .... an, for ai in Sigma
+input: epsilon-NFA (Sigma Union {epsilon}, Q, q0, A, Sigma)
+Output: tree/false (Is w a word in the language?
+
+***********************************************************
+ states <- epsilon-closure({q0})
+ for i in 1 to n do
+	states <- epsilon-closure (Union(for s in states) sigma(s,ai))
+ end
+ if (states Intersection A != Empty), return true
+ else 
+     return false
+************************************************************
+
+Note: The difference between NFA and epsilon-NFA is each time we get a set of states, we take epsilon-closure of it.
+eg. epsilon-closure (Union(for s in states) sigma(s,ai)) 
+
+
+_________________________
+Union of regular language
+
+Let L1,L2 be regular language			     ________________
+L = L1 Union L2 = {x| x in L1 ,or x in L2} is also a regular language
+
+ ->(startL1) ->(())
+
+ ->(startL2) -> (())
+             \
+              ->(())
+
+->() ->epsilon (startL1) -> (())
+    \
+     --->epsilon(startL2) -> (())
+                         \
+                          --->(())
+
+
+_________________________________
+Concatenation of regular language		________________
+L = L1L2 = {xy| x in L1 and y in L2} is also a regular language
+
+->(startL1) -> ( ) ->epsilon (startL2) -> (())
+                ^                    \
+note:this used to be accepting state  -->(())
+
+
+__________
+Repetition					        ________________
+L* = {epsilon} Union {xy| x in L* and y in L} is also a regular language
+
+ ->((startL1)) ->(())
+        ^         |
+	|         |
+ 	-----------
+          epsilon
+Note: in order to accepting episilon, the starting state is also an accepting state.	
+
+eg. L = {a,b}
+L* = {epsilon, a, b, aa, ab, ab, ba, bb,......}
+
+
+
+__________________
+Regular Expression
+epsilon 	--- empty word
+a		--- the word a
+
+Concatenation R1R2 (R1, R2 in RE)
+             - words matched by R1 followed by a word matched by R2
+
+Choice|Alternation|Union|Union:  R1|R2 (R1,R2 in RE)
+	     - words matched by R1 or R2
+
+Repetition: R* (R in RE) 
+             - words matched by 0 or more copies of words matched by R
+
+a+ which is equivalent to aa*
+   - 1 or more copies of a
+DFA: ->() ->a (()) <->a
+
+a? which is equivalent to epsilon|a
+   - 0 or 1 copies of a
+DFA: ->(()) ->a (())
+
+
+Midterm will cover: DFA -> Regular Expression (come up with some tests to test it on midterm! )
+No psudo code for scanning
+
+
+Sigma = {a} , L = all string with even number of a's
+DFA: ->(()) a<->a ()
+RE: (aa)* 
+   or epsilon | aa | (aa)*
+   or epsilon | (aa)*
+
+
+Sigma = {a,b} L = all strings containing aa
+DFA: ->(()) <->b,a   a<->a()
+RE: (a|b)* aa (a|b)*
+
+what about L = all strings not containing aa.
+
+You can say VAR = a|b|c|...|Z
+and use VAR in RE
+
+DC1350 Sat/Sun 4:30 - 6:30 Review Session
+
+
+
+
+
+
+
+************************************
+021-Feb28
+______________
+Midterm topics
+Given reference sheet:
+MIPS 
+MERL
+ASCII
+
+Part of Questions(not finished yet):
+2 questions on MIPS (no recursions)
+2 questions on Linking-Relocation-Loading (like A5P1)
+1 question on binary represtation
+1 question on hex -> MIPS 
+1 question on DFA (question 3 on midterm)
+1 question on RE
+1 question on SymbolTable
+
+
+-----------------------------------------------------
+End of Midterm
+-----------------------------------------------------
+
+___________________
+Parts of a compiler
+
+ ---> Scanner -----> Parser -----------> Context sensitive analysis --------------------------------> Code Generation ------> MIPS Assembly
+ WLPP   (A6)  token  (A7,8)  parse tree		   (A9)		    parse tree + symbol table + type     (A10-11)
+
+
+
+{all input {lexically valid {syntactially valid {Context sensitive analysis: Valid WLPP}}}}
+
+
+____________________________________________
+Regular Language for mathematical operations
+a 
+a + b
+a - b + c
+
+VAR = a|b|c|....|z
+OP = +|-|*|/
+
+->() ----->VAR (())
+  ^		|
+  |		|
+  ---------------
+        OP
+
+Note: we cannot use this DFA to handle a - (b + c)
+  --------------
+  |	OP	|
+  v		|
+  ()------->VAR (())
+  ^             | RPARN )
+  | LPARN(      v
+->() ----->VAR (())
+  ^		|
+  |		|
+  ---------------
+        OP
+
+
+what about (a-(b+c))
+
+  --------------
+  |	OP	|
+  v		|
+  ()------->VAR (())
+  ^             | RPARN )
+  | LPARN(      v
+  --------------
+  |	OP	|
+  v		|
+  ()------->VAR (())
+  ^             | RPARN )
+  | LPARN(      v
+->() ----->VAR (())
+  ^		|
+  |		|
+  ---------------
+        OP
+
+
+- Require 2 extra states for each additonal level of nesting
+- I would need an infinite # of states to represent arbitrary nesting of prarenthese
+- This is NOT a regular Language
+- Balanced Paranthese Problem
+
+But we meet all kinds of nesting problem: 10 nested if + 2 nested for/while loop
+- Regular language is not enough, we need something more power
+That is: context free language, using context free grammer
+
+_____________________
+Context Free Language
+- specified using a context Free Grammer (CFG)
+
+expr -> expr OP expr
+expr -> ID
+OP -> +|-|*|/
+
+we define a language stop at token
+
+A CFG is a set of re-write rules.
+-> unique start symbol (expr)
+-> start at start symbol & replace a symbol occuring on the LHS of a rule with the rule's RHS
+eg.
+expr -> expr OP expr
+expr -> ID
+OP -> +|-|*|/
+
+input = a + b
+input to parser: ID + ID
+
+expr => expr OP expr => ID op expr => ID + expr => ID + ID means the input syntax is correct
+(better choose wisely)	        ^^^^^^^^^^^^^^^^ 
+                              This is called derivation
+
+
+Note: replace one step at a time
+eg.
+expr -> expr OP expr
+expr -> ID
+OP -> +|-|*|/
+expr -> (expr)
+
+input: (a + (b + c))
+input to parser: (ID + (ID + ID))
+expr => (expr) => (expr OP expr) => (ID OP expr) => (ID + expr) => (ID + (expr)) => (ID + (expr OP expr))
+=> (ID + (ID OP expr)) => (ID + (ID + expr)) => (ID + (ID + ID)) the derivation
+so, the input is valid
+
+Let's convert it to a tree.
+	    expr
+	/    |    \
+       (    expr   )
+         /   |     \
+       expr  OP    expr
+        |    |   /  |   \
+        ID   +  (  expr  )
+                 /  |  \
+               expr op expr
+                |   |   |
+                ID  +   ID
+
+but the thing is which rule do we choose to use?
+
+
+__________________________
+Context Free Grammer (CFG)
+A CFG us a 4-tuple: G = (N,T,P,S)
+N: finite set of non-terminal (the symbol on the left hand side)
+T: finite set of terminal (the symbol on the right hand side), also that is token
+P: finite set of Production Rules
+	P is a subset of N x V*
+	where V = N union T
+S: unique start symbol (usually non-terminal, because on the left hand side)
+
+
+************************************
+022-Mar3
+
+__________________________
+Context Free Grammer (CFG)
+A CFG us a 4-tuple: G = (N,T,P,S)
+N: finite set of non-terminal (the symbol on the left hand side)
+T: finite set of terminal (the symbol on the right hand side), also that is token
+P: finite set of Production Rules
+	P is a subset of N x V*
+	where V = N union T
+S: unique start symbol (usually non-terminal, because on the left hand side)
+
+
+expr -> ID
+expr -> expr OP expr
+OP -> +|-|*|/
+
+N = {expr,OP}
+T = {ID,+,-,*,/}
+S = expr
+___________
+conventions 
+(lower case)  a,b,c,d in T - refer to one terminal
+(upper case)  A,B,C,S in N - refer to one non-terminal
+	      W,X,Y,Z in V - refer to one terminal or non-terminal
+	      w,x,y,z in T* - refer to 0 or more terminal - string of terminals
+	      alpha,beta,gama in V* - refers to 0 or more terminals or non-terminals
+
+___________
+Definitions
+________________
+Directly Derive: single application of a rule
+alpha A beta => alha gama beta
+if A -> gama in P
+_______
+Derives: application of 0 or more production rules.
+alpha =>* beta
+if alpha = beta, or alpha => gama and gama => beta
+(relexive transitive closure of directly derives)
+
+eg. (1) expr =>* expr
+    (2) expr =>* ID + expr
+    (3) ID OP expr =>* ID + ID
+____________
+A derivation is sequence of alpha0 alpha1 .... alpha_n
+such that
+(1) alpha0 = S <--- starting symbol
+(2) alpha_n = x <----  string of terminals
+(3) alpha_i => alpha_i+1 
+
+eg. expr => expr OP expr   << alpha1
+    ^^^  => ID OP expr     << alpha2
+ alpha0  => ID + expr      << alpha3
+ 	 => ID + ID        << alpha4
+
+Note: alpha0 is starting symbol
+      alpha_n is a string of terminals
+
+                          ________
+The language defined by a gramma G is the set of strings of terminals st. s derives each element the the set.
+L(G) = {x in T* | S =>* x} 	 although this set might be infinite!
+
+		____________
+A language L is context free if it is defined using a context free gramma.
+* A (or the same) context free language can be specified using different context free grammars.
+* Given 2 CFGs it is undecidable to check whether they generate the same language. (But for RE, there's a deterministic way to convert from one lang to another.)
+___________
+Recognition: given an input word, is the word in the language?
+_______
+Parsing: proving that a word is in the language -- give its derivation
+
+Eg. (this is a popular example)
+T = {a,b,c}
+L = {palindsomes of symbols in T}
+
+S -> aSa | bSb | cSc | M
+M -> epsilon|a|b|c
+
+S => aSa => aa
+S => epsilon
+S => aSa => abSba => abba
+S => aSa => aMa => aaa
+
+N = {S,M}
+S is the staring symbol.
+
+Eg.  N = {A,B,C}
+T = {a,b,c,d,e,f,g,h}
+A -> BgC
+B -> ab | cd
+C -> h | ef
+A is the starting symbol
+
+L(G) = {abgh,abgef,cdgh,cdgef}
+L(G) is a finite language (no recursion). L(G) in this example is not so useful, it's just an example.
+
+Now,
+
+input: abgef
+A => BgC => abgC => abgef
+A => BgC => Bgef => abgef
+These are two different derivations (by defn). alpha2 are different.
+_________
+Property: A derivation uniquely specifies a parse tree.
+		       ````````
+
+eg. Derivation1 above:
+	A
+      / | \
+     B  g  C
+    / \   / \
+   a   b e   f
+
+ Derivation2 above:
+	A
+      / | \
+     B  g  C
+    / \   / \
+   a   b e   f
+
+but, they are DIFFERENT derivations. which gives the same tree. WHY?
+Different means two derivations. not necessarily means it cannot print the same parse tree!
+
+A compiler Requires a unique Parse tree.
+
+
+
+************************************
+023-Mar5
+_________
+Last Time
+
+Note: the following two weeks of lecture contains 50% matrial on final exam.
+`````````````````````````````````````````````````````````````````````````````
+Directly derive, derives, Derivation
+________
+Property: A derivation uniquely specifies a parse tree.
+
+Note:
+	(A specific derivation will have no choice but generate only one parse.
+	It does NOT say whether or not the parse tree is unique. Other derivations may generate the same tree.)
+	Converse is NOT true!
+	A parse tree can have many derivations.
+
+eg.
+expr -> expr OP expr
+expr -> ID
+OP -> +|-|*|/
+
+input: id - id * id
+expr => expr op expr
+     => expr op expr op expr
+     => ID - expr op expr
+     => ID - ID op expr
+     => ID - ID * expr
+     => ID - ID * ID
+
+			  expr
+		    /      |    \
+		  expr     op   expr
+		/  |  \    |     |
+	     expr ID  expr *     ID
+	      |    |   |
+	      ID   -   ID
+
+	 (This tree is leftmost derivation)
+________
+Property: A parse tree can have many derivations.
+
+________
+Property: A parse tree has a unique leftmost/rightmost derivation.
+
+________
+Property: an input string can have many parse trees.
+
+eg. (previoud example)
+
+input: id - id * id
+expr => expr op expr
+     => ID op expr
+     => ID - expr
+     => ID - expr op expr
+     => ID - ID op expr
+     => ID - ID * expr
+     => ID - ID * ID
+
+	           expr
+	      /     |      \
+             expr   op     expr
+	      |     |      / | \
+             ID     -   expr op expr
+			 |   |  |
+			ID   *  ID
+
+	(This tree is ALSO leftmost derivation)
+
+Note: even the same input string can generate different parse tree.
+
+_________________________________________________
+A leftmost derivation (left canonical derivation)
+Always expends the leftmost nonterminal first.
+xAr => xar if A -> a in P
+
+___________________________________________________
+A rightmost derivation (right canonical derivation)
+Always derivation expands the right most nonterminal first.
+bAx => bax, if A -> a in P
+
+
+__________
+Note: even for the same input, and we use leftmost/rightmost , we still might have difference result, depending on the strucure of the tree
+eg.
+input:  id - id * id
+let it be 1 -2 * 3:
+
+			  expr
+		    /      |    \
+		  expr     op   expr
+		/  |  \    |     |
+	     expr ID  expr *     ID
+	      |    |   |
+	      ID   -   ID
+
+result = -3
+
+
+	           expr
+	      /     |      \
+             expr   op     expr
+	      |     |      / | \
+             ID     -   expr op expr
+			 |   |  |
+			ID   *  ID
+
+result = -5
+
+
+
+____
+Defn: ambiguous
+A grammar is ambiguous if there is a string in the language (x in L(G)) where, for a given derivation style, there are multiple parse trees.
+
+- The previous, expr grammar we have been discussing is ambiguous:
+
+expr -> expr OP expr
+expr -> ID
+OP -> +|-|*|/
+
+
+- In this course we will only parse un-ambiguous grammer.
+
+
+Now we convert the above ambiguous grammer into un-ambiguous grammer:
+
+expr -> expr op term
+expr -> term
+term -> ID
+op -> +|-|*|/
+
+Now: for input: id - id * id
+
+expr => expr op term
+     => expr op term op term
+     => term op term op term
+     => ID op term op term
+	...
+     => ID - ID * ID
+
+		     expr
+	      /        |   \
+	    expr      op  term
+	   /  |  \     |    |
+         expr op term  *    ID
+          |   |   |
+        term  -   ID
+          |
+         ID
+
+we can prove we can only create this tree. (No other way of doing it.)
+We can only prove in this example. Normally we cannot prove whether or not it is umambiguous given any grammar.
+
+
+Property:
+* Given 2 CFGs it is undecidable if they are equivalent
+* Given a CFG it is undeciable whether the grammar is unambiguous or not.
+- we can however prove that a grammar is ambiguous by giving an input string that generates multiple tree for the same derivation style.
+(So on the exam, we can only be asked: given an ambiguous grammar, give a string to show it is ambiguous)
+
+
+eg.
+
+expr -> expr PM term | term
+PM -> +|-
+term -> term MD factors | factors
+factor -> ID
+MD -> *|/
+
+input: id - id * id
+expr => expr PM term		(if we goes expr -> term, we will never have a change to generate "-" )
+     => term PM term		(again, only one choice)
+     => factor PM term
+     => ID PM term
+     => ID - term
+     => ID - term MD factor
+     => ID - facor MD factor
+     =>* ID - ID * ID
+
+
+			expr
+		     /   |       \
+		   expr  PM      term
+		    |    |    /   |   \
+		   term  -   term MD factor
+		    |         |   |    |
+		   ID       factor *   ID
+			      |
+		             ID
+
+
+     
+************************************
+024-Mar7
+_________________
+Parsing Algorithm
+
+w = input sequence of token (terminals)   \                S
+unambiguous grammas		          /               / \
+                                                         /\ /\
+
+(1) S => alpah1 => alpha2 ..........  alpha k
+we call it Top down parsing
+
+(2) w <= alpha k-1 <= alpha k-2 ....  <= alpha1 <= S
+we call it Bottom up Parsing
+
+_____________________
+Augmenting a Grammars
+* start symbol should have one rule
+* have terminal symbols for BOF(|-),EOF (-|)
+G = {N,T,P,S}
+G' = {N Union {s'}, T Union {|-,-|}, P Union {S' -> |- s -|}, S'} (this would help coding a lot easier)
+
+An idea:
+* lets start reading symbols from input one at a time, left to right
+* if we recognize a RHS of a rule, reduce it by replacing the RHS with the LHS of the rule
+* we will compute a reverse derivation
+* How to keep track of which partial RHS we have seen so far?
+* We use a stack !!!
+__________________________
+Bottom up Parssing actions
+Shift: read (consume) a symbol from input and push it on the stack
+Reduce: Pop the RHS of a rule from the stack, and push the LHS onto the stack
+RIBS: Reduce it before shifting
+
+S' -> |- S -|
+S -> AyB
+A -> ab
+A -> cd
+B -> z
+B -> wx
+
+input: abywx
+
+_______________________________________________________________________________
+	consumed-input		unconsumed-input	stack		action
+--------------------------------------------------------------------------------
+	epsilon			|- a b y w -|				shift |-		can reduce only epsilon? No, then shift
+--------------------------------------------------------------------------------
+	|-			abywx -|		|-		shift a		        can reduce |-? shift
+--------------------------------------------------------------------------------
+	|-a			bywx -|			a |-		shift b			can reduce |-a? shift
+--------------------------------------------------------------------------------
+	|-ab			ywx-|			ba|-		Reduce using A->ab	yes,we can reduce
+--------------------------------------------------------------------------------
+	|-ab			ywx-|			|- => a |-	shift y
+--------------------------------------------------------------------------------
+	|-aby			wx-|			yA|-		shift w
+--------------------------------------------------------------------------------
+	|-abyw			x-|			wyA|-		shift x
+--------------------------------------------------------------------------------
+	|-abywx			-|			xwyA|-		Reduce using B->wx
+--------------------------------------------------------------------------------
+	|-abywx			-|			yA|- => ByA|-   Reduce using S->AyB
+--------------------------------------------------------------------------------
+	|-abywx			-|			|- => S|-	shift -|
+--------------------------------------------------------------------------------
+	|-abywx-|		epsilon			-|S|-		Reduce using S' -> |- S -|
+--------------------------------------------------------------------------------
+	|-abywx-|		epsilon			   => S' 	
+_______________________________________________________________________________
+
+Note: it's the right-most derivation
+S' => |- S -|		(S' -> |- S -|)
+   => |- AyB -|		(S -> AyB)
+   => |- Aywx -|	(B -> wx)
+   => |- abywx -|	(A -> ab)
+
+_____________________
+Termination Condition
+-> All input consumed
+-> stack contains only start symbol
+
+________
+Parsing
+* keep track of rules used in Reduce
+* The reverse of these rules given you the derivation
+		
+Note: Bottom Up Parsing garentee a reverse rightmost derivation
+-> want to formalize when we should Reduce
+-> want notation to track how much of a RHS is on the stack
+Item: is a production rule with a bookmark somehwere in the RHS
+
+S' -> |- E -|
+E -> E + T
+E -> T
+T -> id
+
+
+E -> *E + T
+     ^
+   we call it Fresh item
+  - implies that none of the RHS is on the stack
+
+-> Push an E on the stack
+
+E -> E* + T
+      ^
+  - implies, now E is on the stack
+
+-> Push a + on the stack
+E -> E +* T
+        ^
+  - implies, now + is on the stack
+
+-> Push T on the stack
+E -> E + T* 	now it is Reducible item
+          ^
+  - implies entire RHS on the stack
+
+
+Notice that:
+E -> *E + T
+E -> E* + T
+E -> E +* T
+E -> E + T* 
+
+It is actually a DFA!
+
+
+Next Monday, we will show how we can use DFA to represent all conversion rules.
+
+
+
+
+************************************
+025-Mar10
+____________________
+Context-free Grammar
+
+S' -> |- E -|
+E -> E + T
+E -> T
+T -> id
+
+
+-> E -> *E + T 
+E
+-> E -> E* + T
++
+-> E -> E +* T
+T
+-> E -> E + T*
+Reducible Item
+
+  -------------------
+->| S' -> * |- E -| |						(1)
+  -------------------
+   | |-
+   v
+  --------------------   T   -------------
+  | S' -> |- * E -|  |	---->|	E -> T*	 |			(2) 
+  | E -> *E + T	     |	     -------------	
+  | E -> *T          |      id      ------------
+  | T -> *id         |	----------->| T-> id *	|		(3)  (keep add fresh item until, it can no longer add more)
+  --------------------       	     ------------
+   | E				        ^		
+   v					|  id
+  --------------------       +     -------------------
+  | S' -> |- E * -|  |    -------> | E -> E + *T     |   (note: we cannot miss any fresh item, or this method won't work)
+  | E -> E* + T      |             | T -> *id        |
+  --------------------             ------------------- 
+   | -|					| T
+   v					v
+  --------------------		   --------------------
+  | S' -> |- E -|*   |		   |   E -> E + T*    |
+  --------------------		   --------------------
+
+
+(1) create a fresh item for the rule containing the start symbol
+(2) transition on the symbol following the bookmark
+	- Update the item (move the bookmark *  forward)
+	- Check if the bookmark now preceeds a non-terminal
+    	- recurse 
+(3) Repeat until no new states are discovered
+
+
+
+-> Run the content of the Symbol stack through this DFA
+-> If we end up at a state containing a reducible item, reduce a reducible item, reduce
+   else shift
+
+   	1
+  -------------------
+->| S' -> * |- E -| |						
+  -------------------
+   | |-
+   v     2  			  5
+  --------------------   T   -------------
+  | S' -> |- * E -|  |	---->|	E -> T*	 |			
+  | E -> *E + T	     |	     -------------  6	
+  | E -> *T          |      id      ------------
+  | T -> *id         |	----------->| T-> id *	|		
+  --------------------       	     ------------
+   | E				        ^		
+   v     3				|  id   7
+  --------------------       +     -------------------
+  | S' -> |- E * -|  |    -------> | E -> E + *T     |   
+  | E -> E* + T      |             | T -> *id        |
+  --------------------             ------------------- 
+   | -|					| T
+   v	 4				v    8
+  --------------------		   --------------------
+  | S' -> |- E -|*   |		   |   E -> E + T*    |
+  --------------------		   --------------------  
+
+eg |- id + id + id -|
+
+______________________________________________________________________________
+symbol stack		read input		unread input		action
+------------------------------------------------------------------------------
+			epsilon			|- id + id + id -|	stage1, shift
+--------------------------------------------------------------------------------
+|-			|-			id + id + id -|		stage 2, shift
+--------------------------------------------------------------------------------
+..... (see handout)
+
+
+Note:
+(The above will time-out, the following has linear run time)
+* Inefficient beacause we run the stack contents throught the DFA for each action.
+* Keep track of states that we reached for the current contetn of the stack
+* Keep a state stack
+* Keep the state stack in the same order with the symbol stack (push/push, pop/pop)
+* At any time, the top of the state stack gives us the state we would reach if we ran the contents on the symbol stack throught the DFA
+
+
+________________________________________________________________________________________________
+symbol stack	state stack		read input	unread input		action
+-------------------------------------------------------------------------------------------------
+		1			epsilon		|-id+id+id-|		shift (no reducible state)
+-------------------------------------------------------------------------------------------------
+|-		2,1 (1->|- 2)		|-		id+id+id-|		shift
+------------------------------------------------------------------------------------------------
+id |-		6,2,1			|-id		+id+id-|		Reduce T->id
+-------------------------------------------------------------------------------------------------
+T |-		5,2,1			|-id		+id+id-|		Reduce E->T
+-------------------------------------------------------------------------------------------------
+E |-		3,2,1			|-id		+id+id-|		shift
+-------------------------------------------------------------------------------------------------
+(more example on handout!)
+
+
+_____
+LR(0) 
+-L: Left to right scan 
+-R: reversed rightmost derivation	
+-(0): no look ahead
+
+eg.
+S' -> |- S -|
+S -> a
+S -> E = E
+E -> a
+  			  a
+-> S' -> *|- S -|	-------> S -> a*
+  | |-			         E -> a*
+  v
+ S'-> |- * S -|
+ S -> * a           E
+ S -> * E = E      ---> 
+ E -> *a
+
+  |  E
+  V
+
+ The two E's shows that this is NOT LR(0) (this is called Reduce Conflict)
+We are stuck. (LR(0) not have reduce conflict)
+
+We can look ahead 1 char. That is LR(1)
+
+
+S' -> |- S -|
+S -> a
+S -> E = E
+E -> a
+  			  a
+-> S' -> *|- S -|	-------> S -> a*  :-| (look ahead find -|, using this rule)
+  | |-			         E -> a*  :=  (look ahead find =, using this rule)
+  v
+ S'-> |- * S -|
+ S -> * a           E
+ S -> * E = E      ---> 
+ E -> *a
+
+  |  E
+  V
+Shift-reduce
+
+Note: WLPP will need a LR(1).
+
+
+
+
+************************************
+026-Mar12
+_________________
+Bottom Up Parsing
+
+
+1)
+Reduce - Reduce Conflict
+A -> r *
+B -> r * 
+we do not know which rule to apply
+
+2)
+Shift - Reduce Conflict
+A -> a * c b
+B -> a
+we do not know whether we shift or reduce
+
+In order to solve this We can: 
+* either change out gramma
+* or change to LR(1)
+
+Note: even LR(1) has conflict, we can have LR(2)..LR(k), the reason is LR(2)...LR(k) seldom use is due to inefficiency
+LR(0)			SLR(1)	 LALR(1)   LR(1)      LR(2),LR(k)
+^^^^   			^^^^^^   ^^^^^^^^  ^^^^^^^^   ^^^^^^^^^^
+no lookahead 	       	       1 lookahead
+		 	      algorithm is the same
+
+
+
+________________
+Top down parsing    (10marks on final)	        
+(create leftmost derivation)
+S' -> |- S -|
+S -> AyB
+A -> ab
+A -> cd
+B -> z
+B -> wx
+
+input: |- abywx -|
+       ^
+
+S' => |- S -|
+* If the symbol is a terminal, match it to the next symbol from the input.
+* If the symbol is a non-terminal, find and apply a rule for it.
+S' => |- S -| => |- A y B -|
+                 ^  ^
+* choose the rule to apply based on the non-terminal (A) and the next input symbol(a)
+Predict [A][a] = A -> ab
+         ^  ^
+ non-termina terminal
+
+S' => |- S -| => |- abyB -|
+                       ^
+Predict [B][w] = B -> wx 
+   
+S' => |- S -| => |- abywx -|
+
+
+_________________________________________________________________________________________
+read input		unread input		stack		Action
+-----------------------------------------------------------------------------------------
+epsilon			|-abywx-|		S'		Top of Stack (TOS) is non-terminal(nt), predict [s'][|-] = s' -> |-s-|
+-----------------------------------------------------------------------------------------
+epsilon			|-abywx-|		|-s-|		pos LHS, push RHS (in reverse. eg -| s |-) so that the stack is in right order
+-----------------------------------------------------------------------------------------
+|- 			abywx-|			s-|		TOS is a terminal, match |-
+-----------------------------------------------------------------------------------------
+|- 			abywx-|			AyB-|		predict [S][a] = S -> AyB
+-----------------------------------------------------------------------------------------
+|-			abywx-|			abyB-|		predict [A][a] = A -> ab
+-----------------------------------------------------------------------------------------
+|-a			bywx-|					predict [B][w] = B -> wx
+-----------------------------------------------------------------------------------------
+(see handout for more details)
+
+
+Sample predict table
+____________________________________
+t\nt	A	B	C	S
+------------------------------------
+a
+------------------------------------
+b
+------------------------------------
+w
+------------------------------------
+x			3
+------------------------------------
+z
+------------------------------------
+y
+------------------------------------
+
+The numbers in the table are the rules number to apply.
+
+Error massage we could have:
+* TOS is a terminal, but it does not match next input symbol
+* TOS is a non-terminal, next input symbol is some symbol y
+  Predict [A][y] = 0 (does not define)
+____
+Defn
+A gramma is LL(1) if |Predict[A][a]| <= 1 for all A,a.
+* first L: left to right 
+* second L: leftmost derivation
+* 1 lookhead
+
+eg. gramma not LL(1)
+____________________________________
+t\nt	A	B	C	S
+------------------------------------
+a
+------------------------------------
+b		2,3
+------------------------------------
+w
+------------------------------------
+x			3
+------------------------------------
+z
+------------------------------------
+y
+------------------------------------
+
+Predict[B][b] has two rules to apply.
+
+************************************
+027-Mar14
+________________
+Prediction Table
+
+Predict[A][a] = {A->b| b =>* a r}
+First(b) = set containing the starting terminal from a sequence of symbols that can be derived from b.
+Predict[A][a] = {A->b| a in First(b)}
+
+eg. 
+S -> AB
+A -> epsilon
+B -> a
+A -> x
+
+parse input: a
+S => AB => B => a
+     A -> epsilon
+
+Predict[A][a] = {}
+
+1.
+checking 
+A -> x
+     ^
+     b 
+Is a in First(x) ?
+
+a not in {x}
+
+2.
+Checking
+A -> epsilon
+     ^^^^^^^
+        b
+a in First(epsilon)?
+a not in {}
+
+=> so Predict[A][a] = {} the empty set
+
+So that means Predict[A][a] = {A->b| a in First(b)} is not suitble. we will add more constrains to it.
+
+____
+Defn
+Nullable(b) : true if b =>* epsilon
+Follow(A) = {b | S' =>* qAbr, for some q and r}
+(updated predict function)
+Predict[A][a] = {A->b| a in First(b) OR Nullable(b) and a in Follow(A)}
+
+Now, Predict[A][a] = {}
+S => AB => Aa
+           a in Follow(A)
+
+|Prediction[A][a]| can be greater than 1
+                       equal to 1 
+                      and equal to 0
+
+Thus, since prediction entries of LL(1) must be at most 1, this Prediction is not LL(1).
+The above example is Parse Error, because to bad input.
+
+
+On the example, we will have coding problem for Nullable(b), Follow(A).
+The only question is given a predict table.
+
+
+_______________________________
+
+ ---> Scanner -----> Parser -----------> Context sensitive analysis
+	                     Parse Tree
+In industry, we just build a Parse Tree directly during parsing. (Industry still using bottom-up parser.)
+
+Shift: push a terminal on to symStack
+Reduce: popped some symbols & pushed a non-terminal
+
+What about instead of push a symbol, we push a tree node
+
+(Redefine shift/reduce)
+shift: push a leaf nodee on to symStack
+reduce: popped some subtrees & pushed a non-terminal
+       -> create a node for the LHS of the rule
+       -> attach the popped nodes as children to the node I created
+       -> push this node
+
+Eg. A -> BcD
+Stack: D c B
+	  A
+      /   |   \
+     /B\  c  /D\
+
+
+class tree{
+    string rule;
+    vector<tree* > children;
+};
+
+void traverseTree(tree* t){
+   ....
+   for each child c of t
+       traverseTree(c)
+   ...
+}
+
+We can implement the traverse of Tree using "VISTOR DESIGN PATTERN".
+
+____________________________
+Context-sensitive analysis
+
+* Variables                 |              (A9P1)
+    - used must be defined  | we creat the symbol Table
+    - multiple declearition |
+* Type mismatch				 (A9P2 and A9P3)
+
+
+symbol Table
+* 2 variables in signature
+* dcls 			  (before that 2 variables)
+t.rule == "dcl type ID"
+ - get the ID child ->get lexeme
+ - get the type child
+
+the symbol Table can make sure we do not have multiple declearition
+_______________________________
+Name		type		
+-------------------------------
+...	  	int/int*
+-------------------------------
+
+
+factor -> ID
+	  ^ 
+   just focus on this ID
+statement -> ID BECOMES expr SEMI
+
+We should be able to do it in ONE pass. (because we always declear before we use.)
+
+______________
+ Type mismatch	
+
+for Type mismatch, follow the rule provided.
+
+************************************
+028-Mar17
+_________
+Last time
+Context Sensitive Analysis
+* Variables
+  -> create a symbol table
+  -> multiple declearations
+
+
+Midterm avg: 78 (Final will be really hard!)
+
+* Type checking
+Why have types?
+  -> prevent mistaks
+  -> allocate the require amount of memory
+  * specifies how a sequence of bits should be interpreted
+   - refers to the intent when these bits were stored
+
+A good type system should prevent interpreting date in a way that was not intended.
+
+WLPP: int/int*
+ int* a = NULL;
+ a = 7;         The type system prevents us from mistakes.
+     ^
+    int
+
+________________
+Type Derivation:
+Determine the type associated with a variable and expressions.
+- ensure that operands of operations have the correct type
+
+Type Correctness:
+Ensuring that components of a construct (which might/might not have a type) statisfy the type system.
+
+
+Sample symbol table:
+_______________________________
+Var Name	type		
+-------------------------------
+a	  	int
+-------------------------------
+b	 	int
+-------------------------------
+c		int*
+-------------------------------
+
+_______________
+Inference rule:
+
+(1)
+(id.lexeme, t) in dcls
+----------------------
+id.lexeme: t
+t in {int,int*}
+
+eg.
+string typeof(tree &t){
+   if(t.rule == "ID"){
+       return symtbl.lookup(t.lexeme);
+   }
+}
+
+
+eg2.
+		expr
+		 |
+		term
+		 |
+		factor
+		 |
+		ID   t
+=>
+
+		expr  t
+		 |
+		term   t
+		 |
+		factor  t
+		 |
+		ID   t
+
+expr -> term
+term -> factor
+factor -> id
+The type of the child is the type of parent.
+(the type of LHS is the type of RHS).
+
+
+
+(2)
+
+--------
+NUM: int
+
+The NUM leaf node is always return an int type.
+
+(3)
+
+
+-----------
+NULL: int *
+
+The NULL leaf node is always return an int* type.
+
+
+(4)
+
+E: t
+-------
+(E): t
+
+E is of type t. E with parenthese (E) is also a type t.
+
+
+(5) Address of
+E: int
+--------
+&E: int*
+
+If E is an int, then &E is an int*.
+In WLPP we do not have a pointer of pointer.
+
+
+(6) Dereference
+E: int* 
+--------
+*E: int
+
+(7) Allocation
+E: int
+----------------
+new int[E]: int*
+
+(8) Multiplication
+E1: int  E2: int
+----------------
+E1 * E2: int
+E1 / E2: int
+E1 % E2: int
+
+(8) Addition:
+E1: int  E2: int
+-----------------
+E1 + E2: int
+
+E1: int* E2: int
+-----------------
+E1 + E2: int*
+
+E1: int  E2: int*
+-----------------
+E1 + E2: int*
+
+
+eg.		
+             t1>>    expr
+	           /   |  \
+            t1>>  expr +  term  << t2
+
+
+(9) subtraction
+E1: int  E2: int
+----------------
+E1 - E2: int
+
+(Since we want to write a code which are compile the code to MIPS, that's no need to check range!).
+
+
+E1: int*  E2: int
+------------------
+E1 - E2: int*
+
+
+E1: int*  E2: int*
+-------------------
+E1 - E2: int
+
+(Note: compare with addtion, subtraction allow int* - int*)
+-----------------
+
+************************************
+029-Mar19
+_________
+Last time
+_______________
+Type Derivation: determine the type for expressions.
+    while(T)   { S }
+        test  sequence of statement 
+Although while does not have a type, but the inside component needs to be checked!
+							      ```````````````````
+
+-> a test is expected to evaluate to a boolean value
+-> WLPP we do not have a boolean type 
+-> WLPP enforces that the test is always a comparison
+	expr1 == expr2
+From the cfg of WLPP, we are garentee to get a comparison in the test. (Do not need to check type for test(not boolean in WLPP), it always return a boolean)
+
+BUT:
+we still need to check the type of operands of the comparison.
+eg. check expr1 and expr2
+
+________________
+Type Correctness
+We say that a construct (statement) to be well-typed if the sub-component of the construct are well-typed (here well-type = type correct).
+* An expression is well-typed if it has a type.
+
+E: T
+------------
+well-type(E)
+
+Intepretation: if E has some type T, then E is well-typed.
+
+_______________
+Comparison/test
+
+E1: T	E2: T
+-----------------
+well-type(E1==E2)
+well-type(E1!=E2)
+well-type(E1<=E2)
+well-type(E1<E2)
+well-type(E1>E2)
+well-type(E1>=E2)
+
+______________
+Assignment (=)
+
+E1: T	E2: T   lvalue(E1)
+--------------------------
+well-type(E1=E2)
+
+
+E: int    lvalue(E)
+------------------
+&E: int*
+
+
+-----------
+lvalue(ID)
+
+-----------
+lvalue(*a)
+
+-----------
+lvalue(*E)
+
+
+Although E1=E2 does not have a type.
+But it is not enough.
+
+eg.  3 = x;
+     ^   ^
+    int  int
+
+-> the LHS of assignment must be a storage location: which we call it "lvalue"
+
+eg.
+&x is allowed
+&3 is NOT allowed
+
+________
+println
+
+E: int
+---------------------
+well-type(println E;)
+
+In WLPP we can only print integer values.
+
+
+______
+delete
+
+E: int*
+-------------------
+well-type(delete []E;)
+
+
+____________
+If statement
+
+
+well-type(T)   well-type(S1)   well-type(S2)
+---------------------------------------------
+well-type(if(T){S1}else{S2})
+
+Statment:
+
+------------------
+well-type(epsilon)
+
+
+well-type(S1)  well-type(S2)
+----------------------------
+well-type(S1S2)
+
+
+
+_______________
+While statement
+
+well-type(T)  well-type(S)
+---------------------------------
+well-type( while(T){S})
+
+
+
+______________
+wain procedure
+
+dcl2: int   well-type(dcls)  well-type(S)  E:int
+--------------------------------------------------
+well-type(int wain(dcl1,dcl2){ dcls S return E;} ) 
+
+      
+							 int   int
+							   ---   --
+(b,int) in dcls    ----------              ----------       a:   b:
+--------------   ----------------        -------------     ---------
+b: int		 dcl_fist  dcl_rest      S_first S_rest    a+b:int
+---------        --------------          ------------     ----------
+dcl2: int        well-type(dcls)         well-type(S)      E:int
+-----------------------------------------------------------------
+well-type(int wain(dcl1,dcl2){ dcls S return E;} )
+
+
+
+If you flip the above picture, (it's a tree)! (it is beyong the scope of the course.)
+
+
+
+_____________________________
+Warning for assignment a10 a11
+- we output: MIPS assembly
+-> you are writing/ compiling WLPP not executing it.
+int a = 0;
+a = 5+7;
+
+DO NOT DO IT!
+make 
+a = 12; is optimization. AFTER you done a10,11!
+
+______________________________
+We have a optimization contest
+- smallest generated assembly
+
+
+
+
+
+
+
+
+************************************
+030-Mar21
+int wain(int a, int b){
+   retrun a;
+}
+            
+             $1     $2
+             ^      ^
+int wain(int a, int b){
+   retrun a;
+}         ^
+       result in $3
+
+
+eg.
+
+int wain(int a, int b){
+   retrun a;
+}
+
+add $3, $1, $0
+jr $31
+
+
+eg.
+int wain(int a, int b){
+   retrun b;
+}
+
+add $3, $2, $0
+jr $31
+
+
+
+We can find the pattern in parse tree:
+
+						S'
+				           /    |   \
+                                          BOF   |    EOF
+				               procedure
+						/|||||\
+ 				int wain(dcl,dcl) { dcls statement return expr;}
+						     |       |             |
+                                                   epsilon  epsilon       term
+								           |
+								         factor
+									   |	
+									   ID
+
+we note that only token we cannot decide which register to return, so we need to keep track of which var is in which register
+we need to table to keep track of it!
+
+________________________
+Var	Register
+------------------------
+a	$1
+------------------------
+b	$2
+------------------------
+c 	$19
+------------------------
+
+
+but what if we do not have enough register?
+
+- arbitrarily decide a register for each local variable
+- MIPS has 32 registers
+-  what if we do not have enough register?
+- the above one-to-one mapping will fail
+
+
+Let's use stack to handle it!
+we use offset table!
+
+____________________________________
+var	Offset with respect to $30
+------------------------------------
+
+
+we can generate comments for MIPS
+; setup variables on the stack
+sw $1,-4($30)
+lis $1
+.word 4
+sub $30,$30,$1
+			;tab row 1
+sw $2,-4($30)
+lis $2
+.word 4
+sub $30,$30,$2
+			;tab row 2
+lw $3,4($30)
+jr $31
+
+____________________________________
+var	Offset with respect to $30
+------------------------------------
+a	4
+------------------------------------
+b	0
+------------------------------------
+
+
+|       |  <- $30
+|-------|  
+|   b	|
+|-------|
+|   a	|
+|-------|
+
+but the problem is each time we will update the ENTIRE tab by adding 4 to each entry.
+
+
+
+-> with using offsets with respect ot $30, we need to update the "offset table" every time we update $30
+-> use the original value of $30 as an additional pointer
+
+|	|  <- $30
+|-------|
+|   c   |  
+|-------| 
+|   b	|
+|-------|
+|   a	| <- $29
+|-------|
+
+Convention: use $29 to point to the first value we push on the stack
+NOW we give a name for $29.
+
+$29 is called a FRAME POINTER.
+-> offsets to variables on the stack do not change with respect to the frame pointers
+
+
+also: we have done some optimization
+sw ..
+sw
+sw..
+the update $30, we may save a lot of instructions
+
+lis $4
+.word 4
+sub $29,$30,$4
+
+sw $1,-4($30)
+sw $2,-8($30)
+sw $0,-12($30)
+
+lis $1
+.word 12
+sub $30,$30,1
+
+lw $3,0($29)
+jr $31
+
+
+
+
+|	|  <- $30
+|-------|
+|   $0  |  
+|-------| 
+| b=$2	|
+|-------|
+| a=$1	| <- $29
+|-------|
+
+
+Now, we can have as many variables as we want.
+
+
+_____________________
+More complicated code:
+
+int wain(int a, int b){
+    return a + b;
+}
+
+
+Given a node with rule A->r
+create code for A by using code for r.
+(do recursion in parse tree)
+
+Convention: "output" of an expression is stored in $3
+
+code(a)   ($3 <- a)
+code(b)	  ($3 <- b)
+
+add $3,$3,$3  (which was wrong)
+
+so, this convention isn't working. (children value will overwrite the parent value)
+But we can try to create a temp variable.
+Again:
+
+code(a)   ($3 <- a)
+add $5,$3,$0 ($5 <-a)
+code(b)    ($3 <- b)
+add $3,$3,$3
+
+But it won't work because what wil we have another add?
+
+eg. a + (b - c)
+
+code(a)
+add $5,$3,$0
+code(b)
+add $6,$3,$0
+code (c)
+sub $3,$6,$3
+add $3,$5,$3
+
+But we need 3 more temp register.
+Sooner or later, we will run out of register.
+What can we do?
+
+
+Push it on the register!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+************************************
+031-Mar24
+_______________
+Code Generation
+variable: use the stack
+
+- use a frame pointer
+
+____________________________
+Generate code for expression
+$3 contains the result of evaluting any expression
+eg.
+ a + b
+
+-using temporary register
+(but what if the expression is way too complicated. what if we need arbitrarily many register, we use stack!)
+
+eg.
+a + (b + (c + d))
+
+			expr
+		/        |        \
+	 	expr     +        term
+		|		  / | \
+		term		( epxr )
+		|		  / | \
+		factor         expr + term
+		|		|       |
+		ID(a)		term    factor
+				|	/ |  \
+				factor ( expr )
+				|	 / | \
+				ID(b) expr + term
+					|     |
+					term  factor
+					|	|
+					factor ID(d)
+					|
+					ID(c)
+
+Now we label the expr.
+			expr1
+		/        |        \
+	 	expr2     +        term
+		|		  / | \
+		term1		( epxr3 )
+		|		  / | \
+		factor         expr4 + term
+		|		|       |
+		ID(a)		term    factor
+				|	/ |  \
+				factor ( expr5 )
+				|	 / | \
+				ID(b) expr6 + term
+					|     |
+					term  factor
+					|	|
+					factor ID(d)
+					|
+					ID(c)
+
+
+code(expr1) = code(expr)    	[$3<-expr2]
+     	      + push($3)    
+              + code(term)	[$3<-term1]
+              +code(expr3)
+	      +code(expr4) 	[$3<-expr4]
+	      push($3)
+	      +code(term)
+	      +code(expr5)
+	      +code(expr6)    	[$3<-expr6]
+	       push $3
+		+ code(term)	[$3<-term]
+
+stack
+-> $30
+	c
+
+	b
+
+	a
+
+Then we perform pop;
+
+		+pop($8) 	[$8<-c]
+add $3,$8,$3			[$3 <- c+d]
+		+pop($8)	[$8<-b]
+add $3,$8,$3			[$3 <- b+(c+d)]
+		+pop($8)	[$8<-a]
+add $3,$8,$3			[$3<-a+(b+(c+d))]
+
+
+That is:
+			expr1	$3
+		/        |        \
+	 $8	expr2     +        term $3
+		|		  / | \
+		term1		( epxr3 )
+		|		  / | \
+		factor      $8 expr4 + term   $3
+		|		|       |
+		ID(a)		term    factor
+				|	/ |  \
+				factor ( expr5 )
+				|	 / | \
+				ID(b)$8 expr6 + term  $3
+					|     |
+					term  factor
+					|	|
+					factor ID(d)
+					|
+					ID(c)
+
+
+__________________
+code for expression
+
+Code(factor->ID)=     ; genecode(tree* t), if t.rule = "factor->ID"
+	     (a)
+lw $3,?($29)
+      ^
+   lookup the offset in table for variable a.
+
+Code(term->factor)= Code(factors)
+Code(expr->term) = Code(term)
+Code(expr1 -> expr2 + term) = Code(expr2)  [$3<-expr2] 		
+		    ^	    +push($3)
+	           add      + Code(term)  [$3<-term]
+			    + pop($8)    
+			    + "add $3,$8,$3"
+
+
+
+_________________________
+Generate code for println
+println expr;
+	````
+	32 bit 2's complement
+
+code(expr)	 [$3<-expr]
+Semantics: print out the decimal represntation of expr
+	2's complement -> decimal
+(using A2p6 's solution:)
+
+print to address 0xffff000c
+- we will use your solution to A2P6/A2P7
+- we have a sample print.asm
+
+we need to:
+-Import print
+put expr in $1, call print (use jalr)
+
+
+_______________________
+How marmoset test this?
+./wlppgen < in.wlppi > out.asm
+cs241.linkasm <out.asm > out.merl	(ESR entries)
+cs241.linkasm <print.asm >print.merl 	(ESD entries for print)
+cs241.linker out.merl print.merl > out-linked.merl
+cs241.merl 0 < out-linked.merl > out.mips
+
+Now, depend on mips.twoints mips.array:
+mips.twoints out.mips
+
+Now, we will use your out.merl to test.
+
+Runtime Environment
+- compiler relies on some code being available when executing the program.
+
+
+ 
+
+
+
+
+
+
+************************************
+032-Mar26
+_____________________________
+code(statement->println expr)
+= code (expr)   		[$3 <- expr]
++ "add $1,$3,$0\n"
+
++ push $31  /
+          "sw $31,-4($30)\n"
+          "sub $30,$30,$4\n"
+
++ "jalr $10\n"
++ pop $31  /
+	+ "add $30,$30,$4\n"
+	+ "lw $31,-4($30)\n"
+
+
+
+
+Note: 
+ "lis $10\n"
++ ".word print\n" should be moved to prologue
+
+The reason for that is the more .word print. The more ESR entries it will create!
+						     `````
+
+Think about we have 100 println !
+We will create 100 ESR entries.
+If we put it in prolouge, only 1 ESR entries!
+
+
+
+______________________________________
+code(statement -> lvalue BECOMES expr)
+= code(expr)
++ "sw $3,?($29\n)"
+	 ^
+      lookup offset
+
+
+
+________
+prologue
+import print
+lis $10
+.word print
+
+lis $4
+.word 4
+
+sub $29,$30,$4
+
+-> place local vars on the stack
+
+lis $11
+.word 1
+
+
+
+_______________
+test/comparison
+$3 will have the value 1 if the condition is true
+		       0 otherwise
+
+code(test-> expr1 < expr2)
+= code(expr1)			[$3 <- expr1]
++push($3)
++code(expr2)			[$3 <- expr2]
++pop($5)	
++"slt $3,$5,$3\n"
+
+Why would we push $3 on the stack?
+We can just tmp var to store $3.
+
+Instead:
+code(test-> expr1 < expr2)
+= code(expr1)
++ "add $5,$3,$0\n"
++ code(expr2)
++ "slt $3,$5,$3\n"
+
+
+what about use a helper function:
+
+genCodeLT(expr1,expr2)
+
+_________________________
+code(test-> expr1 > expr2)
+= genCodeLT(expr2,expr1)
+
+________________________
+code(test->expr1!= expr2)
+= code(expr1)
++ "add $5,$3,$0\n"
++ code(expr2)
++ "slt $6,$5,$3\n"
++ "slt $7,$3,$5\n"
++ "add $3,$6,$7\n"
+
+
+_________________________
+code(test->expr == expr2)
+= gencodeNeq(expr1,expr2)
++ "sub $3,$11,$3"
+
+
+
+_________________________________________
+code(if(test)statement1, else statement2)
+= code(test)
++ "beq $3,$0,elseN\n"
++ code(statement1)
++ "beq $0,$0,endN\n"
++ "elseN:\n"
++ code(statement2)
++ "endN:"
+
+
+___________________________
+code(while(test) statement)
+= "startN:"
++ code(test)
++ "beq $3,$0,endN\n"
++ code(statement)
++ "beq $0,$0,startN\n"
++ "endN:\n"
+
+
+
+
+************************************
+033-Mar28
+_________________
+Final Exam Review
+- stay stuned to Piazza
+
+
+_____________________
+Code Generation(int*)
+
+Code(factor->NULL)
+= "add $3,$0,$0\n"
+
+___________
+Dereference
+code(factor-> STAR factor)
+= code(factor) 	[$3 <- factor]     //now we treat $3 as an address
++ "lw $3,0($3)"
+
+
+__________
+Comparison
+ code(test->expr1 < expr2)
+= code(expr1)
+ + "add $5,$3,$0\n"
+ + code(expr2)
+ + "slt $3,$5,$5\n"
+
+(If expr1, expr2 are int)
+
+But the address is never negative!
+		   ```````````````
+So, We use "sltu" for pointer comparisons. 
+           ``````
+But how can we know if the operands are pointers? We need type info.
+So, we can use type info to decide whether to use "slt" or "sltu".
+
+
+__________________
+Pointer Arithmetic
+code(expr1 -> expr2 + term)
+case1:	expr2: int 	term:int  (what we have done for A10.)
+
+case2:	expr2: int*	term:int
+
+case3:	expr2: int	term: int*
+
+Note: we do not have a[4], we write *(a+4) instead.
+					^
+				this is not add by 4
+				instead it is add by 4*4 = 16.
+				we want the fouth place in the array!
+
+That is:
+*(a+4)	 => expr2 + 4*(term)
+
+____________________________
+code(expr1 -> expr2 + term) 
+	      int*    int
+= code(expr2)
++ push($3)
++ code(term)
++ "multi $3,$4\n"
++ "mflo $3\n"
++ pop($8)
++ "add $3,$8,$3\n"
+
+
+__________________________
+code(expr1 -> expr2 - term)
+	      int      int  (what we have already done in A10)
+	      int*     int  (just change from "add" to "sub" in the previous example)
+	      int*     int* (that is (expr2 - term)/4 )
+
+code(expr1 -> expr2 - term)
+	      int*    int*
+= code(expr2)
++ push($3)
++ code(term)
++ pop($8)
++ "sub $3,$8,$3\n"
++ "div $3,$4\n"			// Warning:  we want signed "div", not "divu", we could have negative difference
++ "mflo $3\n"
+
+
+_____________________________________
+Assignment with a pointer dereference (statement -> lvalue BECOMES expr SEMI)
+				case1: 		    lvalue -> ID			(what we have done in A10)
+						= code(expr)
+						+ "sw $3,?($29)\n"
+						         ^
+							find in the Offset Table
+				case2: 		    lvalue -> (lvalue)			(very trivial)
+						= code(lvalue) + ....
+
+				case3: 		    lvalue -> START factor   (eg. *a = 5, *(a+1)=5)
+						= code(expr)
+						+ push($3)
+						+ code(factor)		
+						+ pop($8)		[$8 is an address!]
+						+ "sw $8,0($30)"
+			
+__________________________
+code(factor -> AMP lvalue)
+case1:		   ID
+= "lis $3\n"
++ ".word ?\n" 
+	 ^
+       offset for id
++ "add $3,$3,$29\n"		
+
+case2:		lvalue -> (lvalue)
+case3:		lvalue -> STAR factor
+= code(factor)
+
+Thus, code(factor -> AMP lvalue) = code(lvalue)
+  
+
+						                      
+
+
+
+
+
+
+
+
+
+
+
+************************************
+034-Mar31
+__________________________________
+Code Generation for Dynamic Memory
+-> new / delete
+		
+- assume the presence of runtime procedures
+- alloc.asm
+
+-------
+|Code |
+|------
+|heap |
+|------
+|Stack|
+-------
+
+-> Initilize the data structure
+   keep track of allocated & free memory inside the heap
+
+procedure: init
+-> if the WLPP program's first parameter is int*
+ $2 the second parameter is the size of the array
+
+-> $2 should remain unchanged
+
+-> If no array was allocated (first param is int)
+$2 = 0
+
+call it once before any allocation/de-allocation
+
+___________________
+code(new int[expr])
+= code(expr)
++ "add $1,$3,$0\n"
++ push($31)
++ "jalr $12\n"			-> assume $12 contains address of new
++ pop($31)
+
+new returns the start address of allotted memory in $3.
+eg.
+a = new int[3];
+
+___________________
+code(delete[] expr)
+= code(expr)
++ "add $1,$3,$0\n"
++ push($31)
++ "jalr $13\n"			-> assume $13 contains address of delete
++ pop($31)
+
+
+______________________________________
+output.merl + print.merl + alloc.merl
+java cs241.linker output.merl print.merl > temp.merl
+java cs241.linker temp.merl alloc.merl > linked.merl
+The above code has some bugs (get invalidOpCode), so NOT use it. Just use the following.
+java cs241.linker output.merl print.merl alloc.merl > linked.merl
+
+
+
+___________________________________________
+Code Optimization    (CS 744 Optimization)
+use heuristics to reduce -> runtime 
+			 -> size
+There might exist a trade-off. (but in this course we assume , small size will be fast)
+
+Requirement: semantics should be unchanged
+-> $3
+-> print outs
+________________
+Constant Folding
+1 + 2 = 3
+
+lis $3
+.word 1
+sw $3,-4($30)
+sub $30,$30,$4
+lis $3
+.word 2
+lw $8,0($30)
+add $30,$30,$4
+add $3,$8,$3
+
+
+simplified:
+lis $3
+.word 3
+
+But what if 
+1 + a
+
+so, we need to decide at which point is an expression too complex so that you resort to a stack to hold temeprory value.
+Simple expression:
+1
+a
+a + b
+a + b + c is not 
+- simple expression not push and pop, because it need at most 1 extra register(we already use $8 for it.)
+1 + 2 code
+lis $8
+.word 1
+lis $3
+.word 2
+add $3,$8,$3
+
+1 + a code
+and,
+lis $8
+.word 1
+lw $3,?($29)
+add $3,$8,$3
+ 
+
+
+________________________________
+constant propagation and folding
+int x = 1;
+return x + x;
+=> constant propagation
+int x = 1;
+return 1 + 1;
+=> constant folding
+int x = 1;
+return 2;
+=>
+return 2;
+
+
+___________________________________
+Comment subexpression elimination
+
+a + a code
+lw $3,0($29)
+push $3
+lw $3,0($29)
+pop $8
+add $3,$8,$3
+
+=>
+lw $3,0($29)
+add $3,$3,$3
+
+
+
+(a+b) * (a+b)
+
+(The two subtree is exactly the same! Try implement an algoritem to find the comment subtree)
+
+_____________________
+Dead code elimination
+
+int x = 1;
+if(x == 3){
+
+.....
+
+}else{
+
+.....
+}
+
+=> constant propagation 
+
+int x = 1;
+if(1 == 3){
+
+.....
+
+}else{
+
+.....
+}
+
+=>  dead code elimination
+
+
+Especially for wlpp:
+check for else whether it contains some code.
+if(...){
+....
+}else{}
+
+code(test)
+beq ... else
+statement
+beq $0,$0,end
+else:
+end:
+
+
+************************************
+035-Apr2
+_____________
+Optimizations
+int x = 1;
+return x + x;
+
+=> constant propagation
+int x = 1;
+return 1 + 1;
+
+=> constant folding
+int x = 1;
+return 2;
+
+If you can determine that a definition/ re-assignment of a variable is never used, then that is dead code.
+
+But if the right hand side has side effect like:
+x = foo();
+and x is never used.
+Elimination is not worked.
+So we still need to execute:
+
+foo();
+
+
+________________________________
+Peephole Optimization (this one is different, it does not involved tree traversal.)
+- Works on the generated output.
+- buffer the assembly instructions.
+- Look at some sequence of instructions, and try to optimize them.
+- The size of instructions inspected numbers are the peephole.
+- Peephole can also used to do:
+  * Constant Folding
+  * push elimination (find useless push)
+  * branch simplication
+
+
+___________________
+Test for A11 Bonues
+1. if(10+10==20){
+.....
+}else{
+.........
+}
+
+
+__________________________________________
+Memory Management (easy 3 marks on final!)
+c++ / WLPP - the programmer is responsible for managing memory (new/delete)
+Java/Scheme: garbage collection algorithm.
+	    `````````````````````````````
+             not on the final
+
+new (c)
+------------
+|	p  |<------
+------------      |
+|	c  | <-|  |
+------------   |  |
+|   heap   |   |  |
+------------   |  |
+|          |   |  |
+-----------|   |  |
+|     	   | --|  |
+-----------|	  |
+|	   |------|
+------------ 
+
+c* p = new (c);
+int* q = new int[4];
+
+
+___________
+Algorithm 1
+Maintain a linked list of free blocks inside the heap.
+
+Initialization: no memeory allocated free block size = heap size
+Assume heap = 1kb = 1024 bytes
+
+free ->	[1024]->[/]
+	  |
+	  v
+	[ 1024 bytes]
+
+Allocate 16 bytes (new int[4]) 
+ 16 + 4 bytes 
+      ^
+     book-keeping
+
+
+[16|......]
+ ^
+delte will use it.

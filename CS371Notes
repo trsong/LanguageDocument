@@ -1,0 +1,1023 @@
+************************************
+002-Jan8
+______________________________________
+Converting base 10 fraction to base 2:
+
+fraction
+while fraction > 0
+	fraction = fraction * 2
+	if fraction >= 1
+		digit = 1
+		fraction = fraction - 1
+	else
+		digit = 0
+
+
+eg. fraction = 
+	.2
+	.4
+	.8
+	.6
+	.2
+	.4 (repeat)
+______________________
+0.001100110011.....
+		____
+.2(base 10) = 0.0011(base 2)
+
+___________________________________
+Representing integers on a computer
+
+Integer - infinite range, positive , negative 
+Computer Integer: 
+	- only finite number of digits can be stored
+	- A base must be chosen
+	- normally base 2
+	- small/large possible integer stored
+	- int in the range stored exactly
+	- computations in that range are exact
+What about int fall outside that range?
+
+________
+Integers
+	
++- d1d2d3...dn
+n digits, base b
+Largest integer?  b^(n-1) + ...b^2+b^1+b^0 = b^n -1 
+Smallest ? -(b^(n-1)) 
+Note: zero has two representations:
++ 0000000000
+- 0000000000
+
+______
+Matlab
+
+we have int8,int16,int32,int64
+	   ^    ^     ^     ^
+	the number of digit it uses
+eg
+d1d2d3d4d5d6d7d8
+^
+sign bit: 0 is + positive , 1 is - negative
+____
+int8
+Sb d1d2d3d4d5d6d7 (d1-d7 is either 0 or 1)
+largest number: + 1 1 1 1 1 1
+		2^6 + 2^5 + 2^4 ... + 2^0 = 2^7 -1
+Matlab Command: intmax('int8')
+
+___________________________________
+Computer Arithmetive is approximate
+Error has be inherited.
+____
+Defn
+exact value : z
+approx: ^z
+Delta z = z - ^z
+delta z = (z - ^z) / z
+
+eg. 
+z= 10 ^z = 9.9
+Delta z = 0.1
+delta z = .1/10 = .01
+
+z = 100000 ^z=999999.9
+Delta z = 0.1
+delta z = .1/10^6 = 10^-7
+
+z = .2 ^z=.1
+Delta z = .1
+delta z = .1/.2 = 0.5
+__________________________
+Fixed Point Representation
+- b, base
+- I, number of digits for integer part
+- F, .................for fractional part
+Numbers are of the form: +- i1i2..iI.f1f2....fF
+Number of values: 2    *   b^I *   b^F = b^(I+F)
+		  ^          ^       ^
+	         pos/neg   #int values  #fractional values
+eg. b=10, I=5, F=3
+# of val = 2*10^5*10^3 = 2*10^8
+
+|-|-|-|-|-|-|-|-|-|-|-|-|
+  ^ ^
+ interval wid = b^-F
+Stored the val exactly
+Represent x - find the interval contain x, and choose one of the exact points
+So,
+Absolute Error <= b^-F		using chopping
+               <= 1/2*b^-F	using rounding
+
+
+____________________________
+Floating Point Represation
+- Base,b			       ___________
+- m, mantissa (number of digits in the normallized fractional part)
+- e, number of digit in the the max exponent
+
+Numbers are of the form in FL(b,m,e)
+0 or +- 0.x1x2..xm * b ^ (+- y1y2...ye)
+where xi is 1,2,...,b-1, for i =1,2....,m
+
+eg. Suppose b=10 m=5 e=3
+x= 0.0001234567875
+normalize
+	0.1234567875 * 10 ^ -3
+ Represent 5 digits 
+	Chooping:  0.12345 * 10 ^ -3   AbsErr = 0.56789 * 10^ -8
+	Rounding:  0.12346 * 10 ^ -3   AbsErr = ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+************************************
+003-Jan10
+Matlab Tut
+1. Tue Jan 14 MC2038 6:00 - 750pm
+2. Wed Jan 15 MC2038 6:00 - 750pm
+___________________________
+Fix point vs Floating point
+
+Two small values			Two big values
+ 0.12345e-9				0.12345e+9
+-0.12344e-9			       -0.12344e+9
+____________				_____________
+ 0.00001e-9 approx= 1*10^13		0.00001e+9 approx= 1*10^5
+
+________________________________________________
+Standard Floating Point Reprentations (computer)
+Single precision (4 bytes = 32 bits):
+__ __________ __ _________
+Sm b1b2...b23 Se e132...e7
+
+Largest positive num = 0.1111....11 * 2^1111111
+		         ^^^^^^
+			 23 digits
+= (1-2^-23) * 2^127 approx = 1.7 * 10^38
+
+Smallest positive - ignore normalize = 0.000.....01 * 2^-1111111
+					  ^^^^^^^^
+					 22 digits of 0
+= 2^-23 * 2^-127 approx = 7.0*10^-46
+
+
+Double precision (8 bytes = 64 bits):
+__ __________ __ __________
+Sm b1b2...b52 Se e1e2...e10
+
+Largest Value approx= 8.0 * 10 ^307
+
+
+_______________
+Machine Epsilon (\epsilon_{mach} = e_mach)
+Machine Epsilon  e_mach is the smallest positive value such that fl(1+e) > 1.
+
+Consider FL(b,m,e) with chopping.
+Prove: e_mach = b^(1-m) (e_mach=1/2 * b^(1-m) for rounding)
+1 decimal
+fl(1) = 0.100....000 * b^1 
+	  ^^^^^^^^^^
+	   m digits in mantissa
+fl(1+e_mach) = 0.10000....1 * b^1
+fl(1+e_mach) - fl(1) = 0.0000...0001 * b^1
+			 ^^^^^^^^^^
+			 m-1 digits of 0
+= b^-m * b^1 = b^(1-m)
+
+eg. Find the largest relative error in fl(x). Prove: |delta_x| <= e_mach
+Let x = 0.d1d2d3...dmdm+1 ... * b^t  <--- d1 != 0.
+fl(x) = 0.d1d2d3..dm * b^t
+abs(delta_x) = abs(x-fl(x)) / abs(x).
+
+abs(x-fl(x)) = 0.000....0d_{m+1} * b^t
+	         ^^^^^^^^
+                  m digits
+= 0.d_{m+1}d_{m+2}...... * b^-m * b^t
+
+abs(delta_x) = abs(x-fl(x)) / abs(x) = (0.d_{m+1}d_{m+2}...... * b^t) / (0.d1d2.. * b^t) (cancel b^t)
+				     = 0.d_{m+1}d_{m+2}...... * 1/0.d1d2.. * b^t  * b^-m
+ 				             ^^^^^     
+ 					      <1              0.d1d2.. >= b^-1   =>  1/0.d1d2... <= b^1
+abs(delta_x) <= 1* b^1 * b^-m = b^(1-m)=e_mach=Machine epision.
+
+________________
+single precision
+e_mach = 2^(1-23) approx = .24 * 10 ^-6
+
+________________
+Double precision
+e_mach = 2^(1-52) approx= .44 * 10^-16
+
+
+___________________________
+Floating point additon (+)
+Note: we often write fl(x) = x(1+n) where n(eita) <= e_mach
+
+Calculation: a (+) b
+delta_x = (x-fl(x))/x
+x * delta_x = x- fl(x)
+fl(x) = x - x*delta_x
+      = x(1-delta_x)	where abs(delta_x) <= e_mach
+fl(x) = x(1+n)		where abs(n) <= e_mach
+
+a(+)b = fl(fl(a)+fl(b))
+      = (fl(a)+fl(b))(1+n_s)
+      = (a(1+n_a)+b(1+n_b))(1+n_s)
+      = a(1+n_a)(1+n_s) + b(1+n_b)(1+n_s)
+      = a(1+n_a+n_s+n_a*n_s) + b(1+n_b+n_s+n_b^n_s)
+      = a + b + a(n_a+n_s+n_a*n_s) + b(n_b+n_s+n_b^n_s)
+abs(a(+)b - (a+b)) <= |a|(|n_a|+|n_s|+|n_a*n_s|) + |b|(|n_b|+|n_s|+|n_b*n_s|)
+		   <= (|a|+|b|)(2*e_mach + e_mach^2)
+
+abs(a(*)b-(a+b)) / abs(a+b) <= (|a|+|b|) / |a+b| * (2e_mach + e_mach^2)
+Note that: when a and b have the same sign, the relative error is really small.
+	   however, when a and b have different sign, the relative error will trend to be really big!
+
+
+
+
+
+
+************************************
+004-Jan13
+____________________________
+Floating point addition (+)
+
+abs(a(+)b - (a+b))/abs(a+b) <= (|a|+|b|)/|a+b| *(2e_mach + e_mach^2) 
+				```````````````
+if a and b are same sign, (|a|+|b|)/|a+b| = 1. So the bound is 2e_mach+e_mach^2.
+if a and b are different sign, 
+	if |a|+|b| >> |a+b| then the error could be very large
+	eg. a = 10^5+1, b=-10^5. |a|+|b|=2*10^5 + 1 , |a+b|=1. the err can be relatively large!
+	eg. a = 0.123456789	
+	    b =-0.123450000
+	    suppose 5 digits mantisa and rounding
+	    fl(a) = 0.12346 
+   	    fl(b) =-0.12345
+			  ____
+	    fl(a)+fl(b)=0.00001
+                          ____
+	    a+b =       0.000006789
+	  NO significant digits are correct by using floating number system!
+********
+This is called Catastrophic Cancellation - substracting two nearly equal val. The result is a small value. often with a major loss of significant digits.			   ``````````````````````````````````
+********
+
+__________________________
+(a(+)b)(+)c =? a(+)(b(+)c)  NO!
+Suppose base 2, 4 digits, choppingm 3dig expt,
+a = 0.1111
+b = 0.00001
+c = 0.00001
+a(+)b
+	0.1111
+	0.00001
+       +________
+	0.11111
+          ^^^^
+a(+)b=> 0.1111
+(a(+)b)(+)c => 0.1111
+
+b(+)c
+	0.00001
+	0.00001
+       +_______
+	0.00010
+b(+)c=> 0.001
+a(+)(b(+)c) => 0.1111
+	       0.0001
+	     +_________
+	       1.0000
+a(+)(b(+)c) => 1.0000
+
+______________
+overflow - result of a calculation is too large to be represented in the computer's number system.
+Underflow - result of a calculation is too small to be represented as a number distinct from 0.
+
+
+________________________________
+Condition of a math problem in P
+P is well-conditioned if small changes Delta_x in x result in small changes Delta_Z in Z.
+     ````````````````
+P is ill-conditioned if small changes Delta_x in x result in large changes Delta_Z in Z.
+     ```````````````
+The Condition Number of a problem P, with repect to absolute error, is K_A = ||Delta_Z|| / ||Delta_x||
+The Condition Number of a problem P, with repect to relative error, is K_R = (||Delta_Z||/ ||Z||) / (||Delta_x||/||x||)
+
+
+Consider the probblem
+y = x/(1-x)
+suppose x=0.93 -> y = 13+(2/7)
+Consider ^x=0.94, ie. Delta_x = 0.01
+Relative error in x: 1/93 approx = 0.01075
+But ^y = ^x/(1-^x) = 15+2/3
+Relative ^y = 70%
+Note: is not because of the floting number system but because of this spcific bad problem
+
+Delta_x = 0.01
+Delta_y= 13+2/7 - (15+2/3) = -(2+8/21) / 0.01 = 234.0952
+if K < 10 => Well-conditioned
+K approx = 10^k => Expect to loss approx = k sig digits in an answer
+
+_________________________
+Stability of an algorithm
+An alggorithm A to solve P is unstable
+* small change in x lead to large change in z
+* one small calc in one step lead to big change later on
+
+Consider solving x^2 + 62.1x+1 = 0
+Calc the roots using 4 digits of accuracy.
+x1 =(-62.1+sqrt((62.1)^2 - 4)) /2 = -0.02000
+x2 = ... = -62.08
+
+Alternative formula:
+(-b +- sqrt(b^2-4ac)) / 2a = (-b +- sqrt(b^2-4ac)) / 2a * (-b - sqrt(b^2-4ac))/(-b - sqrt(b^2-4ac))
+=  - c / (b + sqrt(b^2 -4ac))
+
+Using that formula:
+x1 = -0.01610
+x2 = -50
+
+What was happening?
+
+b = 62.1			-62.10
+sqrt(b^2-4ac) approx= 62.06	 62.06
+ 				_______
+          			-00.04
+		        "Actual"= - 0.032214475
+
+
+
+				
+
+
+
+
+************************************
+005-Jan15
+_____________
+Finding Roots
+Given a function f(x), computationally find x* such that f(x*) = 0
+
+Possible computational problems:
+- fl(x*) may not be exact
+- fl(f(x*)) may not be exactly 0
+Additionaly,
+- x* may be complex
+
+Assume f(x) is continuous, realistically, find ^x such that fl(f(x*)) < /epsilon for some /epsilon
+
+_______________________
+Technique #1: bisection
+Assume a<b, f(a)f(b)<0
+By Intermediate Value Theorem: there exists x* in [a,b], such that f(x*)=0
+Goal: Find smaller and smaller interval containing root:
+- Start with a0, b0 where f(a0)f(b0)<0
+- Repeat
+	
+
+
+eg. Find f(x) = sin(x) over [1,6]
+ a0 =1 b0 = 6
+f(a0) >0	f(b0)<0
+c0 = (a0+b0)/2 = 3.5
+f(c0) = -0.35078
+c1 = 2.25 
+f(c1)=.7781 > 0
+So, right now [a2,b2] = [2.25,3.5]
+c3 = 3.1875
+[a4,b4] = [2.875,3.5]
+
+Suppose |a0-b0|=5, how many steps will it take until |a_k - b_k| <= 10^-5?
+Note that:
+	|a0-b0|=5
+	|a1-b1|=1/2 * 5
+	|a2-b2|=(1/2)^2 * 5
+	....
+	|ak -bk| = (1/2)^k * 5
+
+Solve the eqn: (1/2)^k * 5 <= 10^-5
+               ....
+		k >= 18.9315 = 19 steps
+
+
+___________________________
+Technique #2: Regula Falsi
+-Start with a0, b0 where f(a0)f(b0)<0
+-Repeat
+- Determine the line y= m_k x + d_k, connecting (a_k,f(a_k)) to (b_k,f(b_k))
+- Find c_k satisfying m_k c_k + d_k = 0
+- If f(c_k) = 0, done
+- If f(a_k)f(c_k) < 0: a_{k+1} = a_k, b_{k+1} = c_k
+- Else: a_{k+1} =c_i, b_{k+1} =c_k
+
+
+
+
+
+
+eg. Find f(x) = sin(x) over [1,6]
+y = m_k x + d_k where m_k = (f(b_k) - f(a_k))/(b_k-a_k)
+		      d_k = f(x_k) - m_k x_k
+
+Solve: 
+y = m_k c_k + d_k = 0
+c_k = -d_k / m_k = -(f(bk) - m_k b_k)/ m_k
+= b_k - f(b_k)/m_k = b_k -f(b_k) (b_k -a_k)/(f(b_k) -f(a_k))
+ 
+
+a0 =1	b0=6
+c0 = 6 - (sin 6)(6-1)/(sin 6 - sin 1) = 4.7536
+[a1,b1]=[1,4.7536]
+c1 = 2.7160
+[a2,b2]=[2.7160,4.7536]
+c3 = 3.3118
+[a4,b4]=[2.7160,3.3118]
+...
+[a6,b6]=[3.1385,3.1416]
+
+
+_____________________________
+Technique #3: Newton's Method
+Start with an initial guess x0
+- Repeat
+– Consider the tangent line at x_k: y = m_k x + b_k
+– Choose x_{k+1} as the x-intercept of the tangent line
+
+Tangent line at x_k 
+y = m_k x + b_k
+m_k = f'(x_k)
+b_k = f(x_k) - m_k x_k
+    = f(x_k) - f'(x_k) x_k
+
+So, the tangent line is y = f'(x_k) x + f(x_k) - f'(x_k) x_k
+Set y = 0 to find x_{k+1}
+ 0 = f'(x_k) x_{k+1} + f(x_k) - f'(x_k) x_k
+ => x_{k+1} = x_k - f(x_k)/f'(x_k)
+
+choose x0=2 
+f(x) = sin x , f'(x) = cos x 
+f(x)/f'(x) = tan x
+x1 = 2 - tan 2 = 4.1850
+x2 = 2.4680
+x3 = 3.2661
+x4 = 3.1409
+x5 = 3.141592...
+x6 = 3.141592...
+
+
+choose x0 = 1
+x1 = -0.0659
+x2 = -9.569 * 10^-5
+x3 = -2.92 * 10^-13
+...
+it's getting to 0. (0 is another root)
+
+
+
+************************************
+006-Jan17
+eg. Newton's Method NOT work
+f(x) = x^3- 5x
+f'(x) = 3x^2 -5
+
+Let x0 =1
+x1 = x0 - f(x0)/f'(x0) = -1
+x2 = x1 - f(x1)/f'(x1) = 1
+...
+-1
+...
+1
+
+The tangent lines are parallel, and will never lead you to convergence.
+
+___________________________
+Technique #4: Secant Method
+Like Newton's method. But we calca f'(x_k) use approx val
+f'(x_k)= (f(x_k) - f(x_1))/(x_k - x_{k-1}) 
+we need 2 initial roots
+
+It looks very similar to technique #2, but this method do not worry about bracketing, just go by next iteration
+
+eg. f(x) = sin(x) over [1,6]
+x0 = 1.4
+x1 = 2.6
+
+x2 = 3.9163
+x3 = 3.1585
+x4 = 3.1397
+x5 = 3.14159
+
+________________________________
+Technique #5: Fixed Point Method
+define g(x) = x - f(x)
+If x* is a root of , then it is a fixed point of g, ie x* = g(x*)
+choose x0
+Repeat x_{k+1} = g(x_k)
+
+eg. find root of f(x) = sinx 
+choose g(x) = x - sin(x)
+start with x0 =2
+x1 = x0 - sin(x0) = 1.0907
+x2 = 0.020375
+x3 = 0.0014068
+x4 = 4.6*10^-10
+
+what if start with x0 = 3
+x1 = 2.85888
+...
+x7 = 2.2*10^-9
+
+what if x0 =4
+....
+6.28318 ... (2pi)
+
+It turns out g'(x) = 1- cos(x) 
+g'(pi) = 2 >1 not a good approach
+
+how about h(x) = x + sinx 
+start x0 = 2
+x1 = x0 + sin x0 = 2.9092
+...
+It turns out h'(x) = 1 + cosx
+h'(pi) = 0 < 1 it's a good approach
+
+         ___________      ______________________________
+Note: if |g'(x)| <1 , and x0 is close enough to the root, it will definitely converge to the fixed point.
+
+____________
+When to stop
+1) |f(x_{k+1})| <= tol, for some pre-determined tol >0 
+concerns: f(x_{k+1}) might be small enough but not a root,
+2) |x_{K+1} - x_k| <= tol
+concerns, x_{k+1}, x_k might not be a root at all
+3) k >= some pre-determined maximun number of step
+concerns, x_k might not be a root
+
+_____________
+convergence
+let {x_k} as k -> infty ......
+
+
+__________________
+Linear Convergence
+Linear 
+{Pn} n from 0 to infty with lambda_p = 1/2 and |P{n+1}| approx 1/2 |Pn|, so |P{N+1}| approx (1/2)^n |P0|
+
+Quadratic 
+{Qn} n from 0 to infty with lambda_p = 1/2 and |P{n+1}| approx 1/2 |Pn|^2, so |P{n+1}| approx (1/2)^(2^n-1) |Q0|^(2^n).
+
+************************************
+007-Jan20
+\lim_{k->infty} |x_{k+1} - x*|/|x_k - x*|^k = |e_{k+1}|/|e_k|^q = lambda
+The x is said to converge to x*. 
+
+___________
+Double root
+x* is a double root of f(x*) = 0 iff f(x*) = 0 and f'(x*)=0
+
+____________
+multiplicity
+...
+___________
+Simpel root
+multiplicity 1
+
+
+_____
+Thm
+Newton 's method converges quadratically to x*.
+Prove:
+suppose x* is a simple root of f. By Taykir's expansion, there exist s a Vk between x* and Xk such that
+f(x*) = f(Xk) + f'(Xk)(x* - Xk) + 1/2 f''(Vk)(x*-Xk)^2 =0
+since f'(x*) !=0, x0 is "close" to x* => f'(Xk) !=0
+....(devide each side by f'(Xk) assume f'(Xk) != 0)
+=> - (Xk - f(Xk)/f'(Xk)) + x* = -1/2 f''(Vk)/f'(Xk) (x* - Xk)^2 
+=> -X_{k+1} + x* = - f''(Vk)/f'(Xk) (x* - Xk)^2 
+				    ^^^^^^^^^^^
+				      e_k
+So, |e_{k+1}| = |f''(Vk)|/2|f'(Xk)|  |e_k|^2 = C_k  |e_k|^2
+\lim _{k->infty} |e_{k+1}|/|e_k|^2 = \lim_{k->infty}C_k = lambda , with assumption on f, f' ,f'' and closeness to x*
+That's the definition of quadratic convergence.
+
+Note: if f'(X*) = 0 convergence becomes linear.
+
+
+_________________
+Bisection Method
+Convergence is (roughly/informally) to linear
+|a_k - b_k| = 1/2 |a_{k-1}-b_{k-1}|= .... = (1/2)^k |a0-b0| which is roughly linear.
+
+_________________________________
+Convergence of fixed point Method
+if |g'(x*)|<1 {x_k} will converge 
+if |g'(x*)| = 1 we just do not know whether or not converge.
+if |g'(x*)|>1 {x_K} will converge
+
+
+______________
+contraction
+g is a contraction on[a,b] if exist L in (0,1) such that |g(x)-g(y)| <= L|x-y| for all x,y in [a,b]
+- slope of g in bounded by L
+- |g'(x)| is bounded by L
+
+______________
+Contraction Mapping Theorem
+
+Suppose
+- g is continous over [a,b]
+- a<= g(x) <=b for all x in [a,b]
+- g is a contraction on [a,b]
+
+Then
+- g has a fixed point x* on [a,b]
+- g has only one fixed point on [a,b]
+- {x_k} -> x*, where x_{k+1} = g(Xk) and x0 in [a,b]
+
+Prove there exists x* in [a,b] such that g(x*) = x*.
+let u(x) = x - g(x) for all x in [a,b]
+Recall g(x) >= a for all x in [a,b]
+so g(a) >= a
+a - g(a) <=0
+The same thing happens for b
+b - g(b) >=0
+so u(a)u(b) < 0
+
+by internal value theorem, there exists a root x* of u in [a,b]
+ie. u(x*) = 0.
+x* = g(x*) which is a fixed point of g in [a,b]
+
+
+Assume x* and x2* are both fixed points of g over [a,b], x* != x2*
+x* = g(x*)
+x2* = g(x2*)
+
+g is a contraction 
+=> exists L in (0,1) such that |g(x*)-g(x2*)| <= L |x* - x2*| 
+substitute x* = g(x*), x2* = g(x2*)
+
+we have |x* - x2*| <= L |x* - x2*|
+L >= 1 but L < 1 , so we have a contradiction
+
+Therefore only one fixed point of g in [a,b].
+
+x0 in [a,b], Xk = g(X_{k-1}) and x_{k-1} in [a,b], x1 in [a,b]
+=> Xk in [a,b]
+so |g(x_{k-1} - g(x*))| <= L |x_{k-1} - x*| 
+   |x_{k-1} - x*| <= L |X_{k-1} - x*| 	The error upper is bounded by the previous iteration
+                  <= L^2 |x_{k-2}-x*|
+ 		  ...
+		  <= L^k |x0 - x*| 
+
+So take limit of both sides, \lim_{k->infty} |X_k - x*| <= |X0 - x*| \lim_{k->infty} L^k = 0
+Therefore, x_k will converge to x*.
+
+The convergence is linear. if g'(x*) <1.
+
+************************************
+008-Jan22
+______________________
+Model 3: Linear System
+
+A = [a11 a12 ....... a1n   
+     		...  
+     am1 am2 ....... amn]
+
+b = [b1;b2;b3...;bn]
+
+x = [x1;x2; ... ;xm]
+
+Ax=b
+
+Review:
+1)if n<m, it is undertermined 
+* 0 soln
+* inifity soln
+
+2)if n>m, it is overdetermined
+* 0 soln
+* infinity soln
+* 1 soln
+
+3) n=m
+* 0 soln
+* 1 soln
+* inifity soln
+
+________________________
+use Matlab to solve Ax=b
+* using inverse
+> x = inv(A) * b
+does not work if A not have inverse
+
+* "matrix division"
+> x = A \ b
+using Gussian Elimination
+____________________
+Matrix factorization
+[Q,R] = qr(A)
+where Q is orthogonal
+R is trianguler
+
+Ax = b
+Q^T Q R x = Qb
+Rx = Q^T b
+
+
+_________________
+Lower Triangular
+A  = [a11 0 ............0
+      a21 a22 0.........0
+      a31 a32 a33 0.....0
+        ....
+      an1 an2 an3 an4 .ann]
+That is a_ij = 0 if i<j.
+
+That is easy to solve, because it is easy to forward substutite:
+a11x1 				= b1	x1= b1/a11
+a21x1+a22x2			= b2	x2 = (b2-a21x1)/a22
+...
+an1x1+...		+ annxn = bn	xn = bn - (an1x1+an2x2+...+ann-1xn-1) / ann
+That is called forward substitution.
+
+In general
+x_k = (b_k - \sum_{j=1}^{k-1} a_kj x_j ) / a_kk 
+= b_k - [ak1 ak2 .... a_kk-1] [x1; x2; ...;x_k-1] / a_kk
+
+Matlab code:
+****************************************************** 
+ x = zeros(n,1);
+ x(1) = b(1) / A(1,1);
+ for k = 2:n
+ 	x(k) = (b(k)-A(k,1:k-1)*x(1:k-1)) / A(k,k)
+ end
+******************************************************
+
+
+_________________
+Upper Triangular
+A = [a11 a12 ........ a1n
+     0   a21 .........a2n
+    ....
+     0 0 ..........0  ann]
+
+solve Ax = b
+we can use Backward Substitution.
+The idea of solving it is smiliar to the solving of lower triangular.
+
+
+________________________
+Guaussian Elimination(GE)
+- system of eqn
+- convert to triangular system using the following operation
+- we can replace an eqn with its sum with a multiple of another eqn
+
+eg
+
+A = [2 2 3
+     4 5 6
+     6 7 8]
+x = [x1;x2;x3]
+b = [1;3;0]
+
+first eliminate 4 and 6
+[2 2 3
+ 4 5 6
+ 6 7 8]
+
+Augment of A: [A|b]
+[2 2 3| 1
+ 4 6 5| 3
+ 6 7 8| 0]
+
+Row2 <- -2*Row1+ Row2:
+[2 2  3| 1
+ 0 2 -1| 1
+ 6 7  8| 0]
+
+Row 3 <- -3 * Row1 + Row3
+[2 2  3| 1
+ 0 2 -1| 1
+ 0 1 -1|-3]
+
+Row3 <- -1/2 Row2 + Row3
+[2 2    3|  1
+ 0 2   -1|  1
+ 0 0 -1/2|-7/2]
+
+Now we can solve the eqn by Backward-substitution:
+x3 = 7
+x2 = 4
+x1 = -14
+
+Ax = b
+- Rather than repeat all step - save our elimination steps
+
+L1=
+[1 0 0
+-2 1 0
+ 0 0 1] 
+
+L2=
+[1 0 0
+ 0 1 0
+-3 0 1]
+
+L3=
+[1  0   0 
+ 0  1   0
+ 0 -1/2 1]
+
+So,
+L3 L2 L1 A = U 
+
+Now
+L3^-1 L2^-1 L1^-1 (L3 L2 L1) A = (L3^-1 L2^-1 L1^-1) U
+A = (L3^-1 L2^-1 L1^-1) U
+  = LU for some lower triangular matrix L
+
+so,
+Ax=b
+LUx=b
+let Ux = y 	solve for x using backword substituion
+Ly = b 		solve for y using forward substituion 
+
+solve Ly = b:
+y = L3 L2 L1 b
+
+then solve Ux = y
+
+************************************
+009-Jan24
+
+Ax = b
+LUX = b
+
+Matlab:
+> U = triu(A)
+> L = tril(A,-1) + eye(n,n)
+
+
+What if the pivot is really small:
+A = [0 1
+     1 1]
+we cannot eliminate the a21.
+
+We just switch lines in Matrix:
+A [1 1
+   0 1]
+
+________
+Consider
+eg.
+10^-3 x1 + x2 = 1
+x1 + x2 = 2
+=> x2 = 0.9999
+=> x1 = 1.0001
+The question is well-conditioned. small input  -> small output
+
+
+with FL(10,3,1)
+10^-4 x1 + x2 = 1
+fl(-9999) x2 = fl(-9998)
+
+=> 
+10^-4 x1 + x2 = 1
+-10^4 x2 = -10^4
+
+x2 = 1
+x1 = 0
+
+x2 is close to actual solution. But x1 has relative error is 100%.
+GE is unstable for this case.
+
+what if, we swithch rows?
+x1 + x2 = 2
+10^-4 x1 + x2 =1
+
+=> 
+x1=1
+x2=1
+which are prtty close to our solution.
+That's what we call GEPP(Gaussian Elimination with partial pivoting).
+
+
+_____________________________
+How do permutations affect LU
+
+
+
+************************************
+010-Jan27
+Solve Ax = b when PA =LU
+Ax = b
+- PAx = Pb
+- PA = LU
+-LU x =Pb
+-Ly = Pb
+-sove for y using forward substitution
+-Ux = y
+-then sove for x using backward substitution
+
+flops = floating point operation: + - * /
+
+
+***********************
+L = diag(n)
+U = A
+for p = 1:n-1
+	for r = p+1:n
+		m = -U(r,p)/U(p,p)
+		U(r,p)=0
+		for c = p+1:n
+			U(r,c) = U(r,c) + m*U(p,c)
+		end
+	L(r,p)=-m
+	end
+end
+***********************
+
+since it is matrix operation,we focus on + - * / on matrix
+GE using # of flops
+\sum_{p=1}^{n-1} (\sum_{r=p+1}^{n} 2 + \sum_{c=p+1}^{n} 2 + 1 )
+= 3/2 n^2 - 3/2 n + 2/6 n(n-1)(2n-1)
+= 3/2 n^2 - 3/2 n + 1/3 (2n^3 -3n^2 + n)
+= 2/3 n^3 +1/2 n^2 -7/6 n 
+______________________________________
+GE: is O(n^3) with constant around 2/3
+
+______________________________
+Solving the Triangular System
+
+************************************
+Forward Substitution
+y = b
+for r = 2:n
+	for c = 1:r-1
+		y(c) = y(r) - L(r,c) * y(c)
+	end
+end
+*************************************
+
+# of flop used
+= n^2 - n
+
+
+
+___________________
+"complete" pivoting
+M P A Q = U where P and Q are pre and pos-permutation matrices.
+P A Q = M^-1 U
+P A Q = LU
+
+
+A x = b
+PAQ = LU
+PAQ Q^-1 = LU Q^-1  (since Q^-1 = Q)
+PA = LUQ
+-now solve 
+LUQ x = Pb
+Ly = Pb
+solve y
+Uz = y
+Qx = z
+=>
+x = Q^-1 z
+=Qz
+
+
+************************************
+012-Jan31
+____________________________
+Linear Least Square Problem
+
+A'Ax = A' b
+
+This is called the normal Equations.
+

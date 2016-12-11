@@ -1,0 +1,1265 @@
+************************************
+001-May6
+______
+CS 341
+
+Mark Patrick
+mdtpetri@uwaterloo.ca
+
+
+________________________________
+Design and Analysis an algorithm
+* correctness
+* efficiency
+* readability
+* maintainability
+* correctness
+* security
+* stability
+* expandability
+* reusability
+* moduarity
+
+
+
+************************************
+002-May8
+______
+Review
+
+Theta(n) Tight bound.
+Theta(n) <=> O(n) and Omega(n)
+takes roughly kn + c steps, where k is a positive integer
+__________________________
+Running Time vs Complexity
+For sufficient large input, the one with low complexity has lower runtime.
+But for small input, we might use the one with higher complexity.
+
+
+eg. Suppose f(n) = 7n+13, g(n)=2n^2+2, show f(n) in O(g(n)) from first principles
+
+That is to show that f(n) <= c*g(n) for all n >= some n0
+
+f(n) = 7n+13 <= 7n + 13n = 20n for all n >=1
+Note 20n <= 20n^2 <= 20n^2 + 20 <= 10(2n^2+2) <= 10 *g(n)
+
+eg. Prove (n+1)^7 in O(n^7)
+n+1 <= 2n for n>=1
+(n+1)^7 <= 2^7 n^7 = 128 n^7
+************************************
+003-May13
+___________________________
+Maimum Subsequence Problem
+
+* input: array A[1..n] of integers
+* output: consecutive run with largest sum
+
+************************
+ max = 0
+ for i = 1 to n
+    for j = i to n
+        sum = 0
+   	for k = i to j
+	   sum = sum + A[k]
+	   if sum > max
+		max = sum
+  	   end
+	end
+    end
+ end
+************************
+
+
+************************************
+004-May15
+______________
+Devide-conquer
+
+Devide:
+Conquer:
+Combine:
+
+_____________________
+Analysis of mergesort
+
+let T(n) denote time for array of length n
+divide: Theta(n)
+conquer: T(floor(n/2)) + T(ceil(n/2))
+combine: Theta(n)
+
+Recurrence relation:
+T(n) ={ Theta(1)		if n =1
+      { T(floor(n/2)) + T(ceil(n/2)) otherwise
+
+_____________________
+Recursion Tree Method
+Use the recursion tree method: Let n = 2^i for some i
+step1:		.	T(n)		T(n) = T(n)
+step2:		.	cn		T(n) = cn + 2*T(n/2)
+	       / \
+	      .   .     T(n/2)
+step3:		 .	cn		T(n) =cn + 2cn/2 + 4T(n/4)
+	       /   \
+	      .     .	cn/2
+	     / \   / \
+	    .   . .   . T(n/4)
+
+step4: 
+		/\/\/\/\/\ 
+step?:		ddddddddddd
+
+how can we decide ?
+
+choose a simple case: n = 8
+8  |
+4  | => lg 8 = 3
+2  |
+1 <- n =1 reach base case
+
+how can we decide the number of d?
+the # of node per level
+1
+2
+4
+8	which is n 
+
+T(n) = nT(1) + c(n +2n/2 + 4n/4 + ... + (n/2)*n/(n/2))
+     = nT(1) + c(n logn)
+     = cnlog n + nd
+
+but it only works if n is a power of 2.
+What if we want to be precise?
+T(n) = n ceil(log n) + 2^(ceil(log n)) + 1
+
+Often, we want growth rate
+T(n) <= T(n')
+n' = smallest pow of 2 bigger than n
+
+
+________________
+Guess and verify (by induction)
+T(n) ={ 0		if n =1
+      { T(floor(n/2)) + T(ceil(n/2)) + n -1 otherwise
+Note: if we want to be precise
+
+Prove T(n) <= cnlog n by induction for all n >= 2
+* seperate into odd and even
+even:
+Base case: n = 2
+	   T(n) = 2T(1) + 1 = 1
+	   cnlog n =   2clog 2 = 2c
+	T(2) = 1 <= 2c will work if c >= 1/2
+Induction step:
+	    n even, T(n) = 2T(n/2) + n - 1
+	apply indcution hyphothesis:
+		T(n) = 2T(n/2) + n - 1 <= 2c n/2 log(n/2) + n - 1
+		<= cn(logn - log2) + n-1
+    		<= cnlogn -cn + n -1
+		<= cnlogn if c>=1
+Then we can say if c >= 1 by induction, T(n) <= cnlogn if n is even
+
+odd:
+T(n) = T(floor(n/2)) + T(ceil(n/2)) + n -1
+     = T((n+1)/2) + T((n-1)/2) + n - 1
+
+.......
+
+
+eg. T(n) = 2T(n/2) + n guess O(n)
+Proof: T(n) <= cn
+Assume by induction:
+	T(n') <= cn' for all n' < n , n'>n0
+then 
+	T(n) = 2T(n/2) + n
+	     <= 2cn/2 + n = (c+1)n
+But we cannot say anything about proof.
+we want T(n) <= cn
+	but we get T(n) <= (c+1)n
+note c is growing......
+assume we want c, now we get we need c+1,
+	if we assume c+1, then we get c+2
+	...
+proof does not work.
+
+bad constant, constant growing
+so we can say T(n) in O(n) is false.
+
+
+
+eg. T(n) = T(floor(n/2)) + T(ceil(n/2)) + 1
+    T(1) = 1
+Guess T(n) in O(n)
+Proof by induction: T(n) <= cn for some c
+T(n) <= c floor(n/2) + c ceil(n/2) + 1 = cn+1
+but we are trying to show <= cn
+note: cn + 1 not <= cn for any c>0
+
+What happened?
+Is T(n) not in O(n)
+
+Try n to be a pow of 2
+T(n) = 2(n/2) + 1
+     = 2^(k+1) - 1
+     = 2n -1 for n = 2^k works for T(n) <= cn 
+
+Try to prove by induction:
+T(n) <= cn - 1
+T(n) <= c floor(n/2) - 1 + c ceil(n/2) - 1 + 1
+      = 2n - 1  it does work!
+
+Note: T(n) <= cn - 1 <= cn
+
+
+Note: we make the induction work by lowering the bound
+
+
+
+
+************************************
+005-May20
+Math239 solving recurence
+
+Homogeneous Linear recurrences
+T(n) = a_n-1 T(n-1) + a_n-2 T(n-2) + .. + a1 T(1) + f(n)
+
+This homogeneous means: f(n) = 0
+in computer science:
+T(n) equal a_n-1 times T(n-1) amout of work + ... amout of work + f(n) some constant work
+
+Algoritm Analysis: f(n) != 0
+we often get recurrence of the form
+
+T(n) = a T(n/b) + cn^y
+that is:
+divide a problem into a's subproblems of size (n/b) and do cn^y extra work
+
+eg.
+y=1, a=2, b=2
+T(n) = 2T(n/2) + cn
+That's merge sort!
+
+T(n) in O(nlog n)
+
+eg.
+y=1, a=1, b=2
+T(n) = T(n/2) + cn 
+T(n) in O(1)
+
+eg.
+y=1, a=4, b=2
+T(n) = 4T(n/2) + cn 
+T(n) in O(n^2)
+
+
+______________
+Master Theorem
+Master Theorem provide a formula for the recurence encoutered in the analysis of Devide-and-conquer
+
+Suppose that a>= 1 and b>1. Consider ther recurrence
+T(n) = aT(n/b) + Theta(n^y)
+
+Denote x = log(b,a) = lna /lnb, Then
+
+T(n) in Theta(n^x) 		if y<x
+	Theta(n^x logn) 	if y=x
+	Theta(n^y)		if y>x
+
+
+
+
+Interpretation:
+```````````````
+T(n) = cn^y
+     /|||||| \
+  T(n/b).....T(n/b)  a terms
+
+so when we combine them together
+T(n) = aT(n/b) + cn^y  
+
+T(n) = cn^y
+     /|||||| \
+  T(n/b).....T(n/b)  a terms
+  ///\\\\
+T(n/b)
+
+T(n) = a^2 T(n/b^2) + ac(n/b)^y + cn^y
+     = a^3 T(n/b^3) + a^2 c(n/b)^y + ac (n/b)^y + cn^y
+....
+     = 
+How many times can we get the base case?
+
+n/b^i = 1
+i = log(b,n)  (that is  ln n / ln b) 
+i is the height of the tree
+
+T(n) =
+.....
+     = a^(log(b,n)) T(1) + sum(i=0,log(b,n-1),	a^i  c(n/b^i)^y)
+    
+note: a^(log(b,n)) = n ^(log(b,a))
+     = n^(log(b,a)) T(1) + cn^y *sum(i=0,log(b,n-1),(a/b^y)^i)
+       ````````````        `````
+****************************************************************************************************************
+Note: which terms of the two of n^(log(b,a)) and cn^y will dominate the equation?
+
+Now, let x = log(b,a)
+
+If a < b^y , ie x = log(b,a) <y						Heavy top (the combine work is large)
+the second term dominates
+Also the sum is constant so get O(n^y)
+
+If a = b^y, ie x = log(b,a) = y						Balanced
+then the sum is O(log n) 
+so get O(n^y log n) = O(n^x log n)
+
+If a > b^y then the first term will dominate				Most of the work are done on the leaves
+O(n^(log(b,a)) = O(n^x)
+
+****************************************************************************************************************
+
+
+We can extened to Extened Master Theorem (in slides)
+
+
+____________________
+The Max-Min Problem
+
+T(n) = 2T(n/2) + Theta(1)
+a=2, b=2, y=0
+log(b,a) = 1
+
+x > y by master theorem
+T(n) in Theta(n^1) = Theta(n)
+
+
+_____________________________
+Multiprecision Multiplication
+Given two large number, do the multiplication
+eg.
+	981
+     * 1234
+     -------
+       ...
+     -------
+    1210554
+Given two n-digtit number, the traditional way of doing it will take O(n^2) amout of work
+
+* easiest when numbers have same number of digit
+so pad 981 to 0981
+
+0981 	1234
+09|81   12|34	by using divide-and-conquer
+	  shift
+09 * 12   4
+09 * 34   2
+81 * 12   2
+81 * 34   0
+
+when we comime them, 08 * 12 is shift by 4 bits
+108 _ _ _ _
+
+108....
+  306..
+  972..
+   2754
+--------
+
+so we get four sub-problem of size n/2
+and linear amout of work we need to combine the result
+
+
+0|9  1|2
+0 * 1
+0 * 2
+9 * 1
+9 * 2
+
+
+
+T(n) = 4(T/2) + Theta(n) ---> Theta(n) is the combined work (shifts & additions)
+a=4, b=2, y=1
+x=log(2,4)=2
+
+by Master theorem
+x > y
+=> Theta(n^2)
+
+complexity-wise: this one has no gains here!
+BUT, 
+
+X = XL XR
+Y = YL YR
+
+XL*YL . .  . .
+     XL*XR . .
+     XR*YL . .
+	  XR*YR
+-----------------
+
+
+______________________
+Karatsuba & Ofman 1962
+
+let XT = XL + XR
+    YT = YL + YR
+
+XT * YT = (XL + XR)(YL + YR)
+        = XL*YL + XL*YR + XR*YL + XR*YR
+          `````                   ``````
+          we get previously
+
+so we swap 1 multiplacation operation with 4 + - linear operations
+
+T(n) = 3T(n/2) + Theta(n)
+a=3, b=2, y=1
+x= log(2,3) 
+y= 1
+Theta(n^log(2,3)) = Theta(n^1.585) better than Theta(n^2)
+
+_______________
+Pratical Issues
+(1) odd lenth or different length?
+pad the input
+(2) what base to use? base 2 or 2 or other?
+use the largest base such that 2 digits can be multiplied directly
+(3) when is this algorithm useful?
+for small n the overhead is too high
+this algrithm beats O(n^2) school method
+for numbers of 1000 digits
+for large n there are asymoaticially better algs with more overhead O(nlogn log logn)
+
+
+
+************************************
+006-May22
+_____________________
+Matrix Multiplication
+
+[a b c  [d . .
+ . . .   e . .
+ . . .]  f . .]  
+
+=
+[x . .
+ . . .
+ . . .]
+
+x = ad + be + cf in Theta(n)
+we have n*n enties.
+So, the total runtime = Theta(n) * n^2 = Theta(n^3)
+
+
+Divide-and-conquer:
+Divide a nxn matrix into four n/2 x n/2 quarents 
+
+T(n) = 8T(n/2) + Theta(n^2)
+       ^               ^
+    8 multi            matrix addition take Theta(n^2)
+
+a=8, b=2, y=2
+x=log(b,a)=3
+x>y,
+Theta(n^x) = Theta(n^3)
+
+
+Like we do with number multiplication:
+we scarifce some multiplacation and do more add and sub
+
+Idea: do more cheaper operation in order to do less more expensive operations
+more add in order to less multi
+
+
+So we get:
+T(n) = 7T(n/2) + Theta(n^2)
+a=7, b=2, y=2
+x= log(2,7) = 2.808 > y
+Total runtime: Theta(n^2.808)
+
+
+____________
+Closest Pair
+Instance: a set Q of n distinct points in the 2-d Euclidean plane
+Q[Q[1] Q[2] ... Q[n]]
+
+Find: two dinstinct points Q[i] = (x,y), Q[j] =(x',y') such that the Euclidean distan 
+sqrt((x-x')^2 + (y' - y)^2) is minimized.
+
+Brute force - compare distance of all pairs - Theta(n^2)
+
+Divide-and-Conquer:
+Divide the problem into exact small problem.
+		        `````
+We have n points
+we can devide them into n/2 points.
+But it doesn't work.
+
+in 1-d:
+(1) sort by x-coord					in Theta(nlog n)
+(2) consider the distance between consecutive points 	in Theta(n)
+Note: it does not work in 2-d
+
+
+*Divide the points into the left half L, and the right half R. 
+Using the devide line l.
+*recursively solve cloest pair on L and R.
+*combine parts (tricky):
+consider solutions from L and R and points clost to l.
+*need to find the closest pair crossing & 
+Let delta = min distance  of {closest pair in L, and cloest pair in R}.
+Let d(p,q) to be the distance between points p and q.
+Must check pairs p in L, q in R with d(p,q) < delta
+        delta
+     |<-|->|
+.	|.
+  .	|   ..
+.	|.
+  .	|.  . . 
+   .   .| . 
+        L 
+
+claim such points satisfy d(p,l) < delta and d(q,l) < delta
+(Otherwise horizontal disntance is > delta so dinstance > delta)
+Let S = points in the vertical ribbon of width 2delta we can resrict our search to s such that it | | could be all n points
+
+similiar in 1-d
+sort by y-coord
+
+Out hope: if p,q in S, p in L, q in R and d(p,q)<delta, then p and q are near each other in sorted S (by y)
+
+nice case:
+
+      |   |
+       .|
+	|
+	|.
+	|
+
+worst case - how many points can you put within delta of each other on each side of l?
+     delta
+	 |
+d   .---.|.---.	
+e   |	 |    |
+l   .---.|.---.
+t	 |
+a
+
+1 point choose, another 7 points within the potiential area. further that delta, we do not care
+Only 7 look ahead at most
+
+Claim, If p,q in S, p in L and Q in R, d(p,q) < delta then p and q are at most 7 positions apart in the sorted S (by y)
+
+S_1.... S_i S_i+1 ... S_i+7  .... S_n
+	^    ^^^^^^^^^^^^^^^
+	p     look here for potiential q
+so 7n comparasion
+
+Wrap up: sort by x-coord   \ prelimary, do not sort again
+	 sort by y-coord   /
+Do not sort at every step, but pull out the sorted list for each step in linear time
+
+T(n) = 2T(n/2)  + cn
+       ^
+       2sub-problem
+
+a=2, b=2, y=1
+x=log(2,2) = 1
+Theta(nlog n)
+
+
+------------------
+In the same time find cloest neighour for every point
+
+
+
+
+
+
+************************************
+007-May27
+_________
+Selection
+
+Recall from cs240
+* choose a pivot - some element from the array
+* go through the array and find the element larger than the pivot
+	                   find the eleemnt smaller than the pivot
+
+-> determines the position of the pivot in the sorted array
+worst case: O(n^2) eg. sorted, choose the first or last element, may be recursion list of size n-1
+
+average case: O(nlog n)
+
+worst case: T(n) = T(n-1) + cn in Theta(n^2)
+
+___________________________________
+BFPRT's Medium of Medium Algorithm
+choose the pivot by finding median of medians of blocks of size 5
+n = 10 r + 5 + theta (r>=1 , 0<theta<=9)
+odd number of groups so choosing MOM is easy. Theta-whatever left over
+
+r = (n - 5 - theta)/10
+
+2r +1 blocks of 5
+what is the size of the smallest subproblem?
+3r+2 elements are < MOM
+
+3r elements from r groups with median < MOM
++2 elements from MOM block
+
+what is the size of the largest subproblem
+n - (3r + 2) - 1
+	       ^
+	    Not include MOM
+= n - 3r -3
+= n - 3((n - 5 - theta)/10) - 3
+= (7n -15 + 3Theta)/ 10 <= floor((7n + 12) /10) 	(if Theta is 9, and n-3r -3 is an integer, (7n+12)/10 is a fraction, so down round to nearest number)
+
+
+============================That's the end of Divide and Conquer===============================
+
+_____________________
+Optimization Problems
+
+A greedy algorithm you already know make change for $3.47
+Constraint: minimal # of coins
+
+Claim: greedy algorithm is optimal for Canadian coin system
+
+
+__________________
+Interval Selection
+
+
+
+
+************************************
+008-May29
+sort intervals by finish time: A1, A2, ..., An st. f1<=f2<=...<=fn (to make sure no overlapping)
+B <- empty
+for i = 1 to n
+  if activity Ai does not intersect with any interval in B
+    then B = B Union {Ai}
+
+sorting takes O(nlog n)
+Loop: O(n)?
+
+=> O(nlog n)
+
+
+
+________________
+Greedy algorithm
+-2 base approaches
+(1) Greedy stady ahead all of the time (always choose the best move at each step)
+(2) exchange proof
+
+Here we use (1)
+Lemma: This algorithm returns a max size of set B of disjoint interval
+Proof:
+Let B = {A1,...Ak} sorted by finish time
+Compare to an optimal solution, C = {c1,...,cl} sorted by finish time
+k <= l (C is the optimal solution, we want to show k=l)
+
+Idea: At every step we can do better by choosing A's, claim A1,..Ai Ci+1...Ce is an optimal solution for all i
+
+Proof by induction:
+Basis i=1, Ai has an earilier (<=) finish time compared with c1 so end (A1) <= end(C1)
+so replacing C1 with A1 leaves disjoint interval
+
+IH: ...
+IS: A1...Ai-1 Ci ... Cl is an optimal solution
+Ci does not intersect A1 ... Ai-1 so the greedy algorithm could have chosen it
+Instead it chose Ai so end end(Ai) <= end(Ci)
+and replacing Ci with Ai leaves intervals disjoint
+
+
+So, A1,..Ai Ci+1...Ce is an optimal solution for all i
+This proves 
+A1,..Ak Ck+1...Cl is an optimal solution
+
+
+
+_______________
+Another Example - scheduling to minimize lateness
+assignment	time required	deadline
+cs341		4		in 9 hrs
+Math		2		6
+Phil		3		14
+cs350		20		25
+
+Question: can you do everything by its deadline?
+* Assume ignore sleep
+How?
+No parrallel processing
+
+More generally we will turn this into an optimization problem.
+Find the schedule, allowing some jobs to be late, but minimizing maximum lateness.
+
+Note: this is different from minimizing sum of lateness.
+Job i requires time ti and has deline di.
+[		][]
+or
+[][		  ]
+
+Observation1:            | dead line for other job
+[part of i] [other jobs] [rest i]
+           ||
+           vv
+[other jobs][          i        ]
+
+Other jobs complete eariler 
+job i is at the same time
+each job should be done continueously all at once
+
+
+Observation2:
+It is never beneficial to take a break.
+
+What about "do jobs with less slack first, slack = di - ti"
+But 			|d2			  |d1
+[						][]
+[][						  ]
+
+
+What about "do jobs in order of deadline st d1<= d2<= ... <=dn"
+A general approach to proofs.
+Don't be general at first. 
+Try special cases but keep them simple.
+
+n = 2, d1 < d2
+           |d1 			   |d2
+	   ______________________________
+[2	][1				]
+	   _____________________    _____
+[1			  	][2 	]
+Let lG be max latness of the greedy shcdule
+    l0 be 	other solution
+
+lG(2) <= L0(1)
+lG(1) <= l0(1)
+
+lG = max{lG(2),lG(1)} <= l0(1) <= l0
+
+Can we genelize this idea?
+allows us to swap a pair of consecutive jobs of their deadlines are out of order.
+Makeing the solution better or no worse.
+eg.
+greedy: 1 2 3 4 5
+opt:	1 3 4 2 5 => 1 3 2 4 5 = 1 2 3 4 5 that's bubble sort!
+
+
+
+************************************
+010-Jun5
+You are going on a camping trip to Quetico Park. You want to pack your knapsack to maximize value and minimize weight given n item
+item i has value Vi and Wi. Knapsack has weight limit capacity W. 
+
+Put item into knapsack:
+* sum of weight <= W
+* maximize sum of values 
+
+Let S is a subset of {1,2,3,4,...} where sum_{s in S} Ws <= W
+
+_________________
+Greedy approaches
+(1) choose item with small weight
+(2) choose item with highest weight
+(3) sort by value/weight ratio, pick items in the order until they don't fit
+(4) brute force
+(5) backtracking
+
+(1) i value weight
+    1 1     1
+    2 2     2
+W = 2
+Take item 1  (value 1), but can't take item 2
+
+(2) i value weight
+    1 6     2
+    2 3     1
+    3 4     1
+Take item 1 but taking 2 and 3 is better
+    
+(3) i Vi Wi Vi/Wi
+    1 12 4  3
+    2 7  3  7/3
+    3 6  3  2
+W = 6
+Take item 1 but taking 2 and 3 is better
+
+(4) Brute force: try all combinations (all subsets). 2^n
+
+(5) backtracking: take one item out, replace with something else
+
+
+
+We just can't solve it. We change the problem
+____________
+0-1 knapsack: item are itmes are indivisible. eg. canoe,tent,flashlight 
+Fractional Knapsack: allow fractions of an item to be taken
+For eg3.
+0-1: take items 2 and 3 => value 13
+fractional: take item 1 and 2/3 of item 2 => value 12 + 2/3 * 7 = 16+2/3
+
+0-1 knapsack: deal with it later-dynamic programming
+             * not efficient and is hard
+
+Greedy: sort by value/weight, pick as much of item as possible.
+
+Xi - weight of item i that we take.
+free_w <- w
+for i = 1 to n (item are sorted by the value/weight)
+   Xi <- min{free_w,Wi}
+   free_w <- free_w - Xi
+
+Runtime: O(nlog n) to sort.
+
+
+Solutions look like
+item: 1  2  3 ... j j+1 .... n
+Xi:   x1 x2 x3
+
+usually x1 = w1, x2 =w2 ,...., fractional amout of last item
+
+Final Weight: sum_{i=1}^{n} Xi = W if sum_{i=1}^{n} Wi >= W
+Final Value: sum_{i=1}^{n} Xi (Vi/Wi) 
+
+Claim: The greedy alg gives an optimum solution to the fractional knapsack problem.
+Proof: 
+ greedy: x1 x2 ...... x_k-1 x_k ..xn
+ opt:    y1 y2 ...... y_k-1 y_k ..yn
+
+Suppose y is an optimum solution max x on the max number of indices (Initial indices)
+Let the k be the index that do not match. (x1=y1,...x_{k-1}=y_{k-1}, x_k != y_k )
+Rememeber the greedy solution, greedy takes the most as possible.
+That is X_k > y_k.
+since sum y = sum x = W, there is a later index l, yl > xl
+
+Exchange weight delta of item l for equal weight of item k in the optimal solution
+y'k <- yk + delta
+y'l <- yl - dleta
+where delta <- min {yl - xl, xk - yk}
+
+then y'l = xl or y'k = xk
+
+Change in value.
+   delta(vk / wk) - delta(vl/wl)  = delta (vk/wk - vl/wl) is non-negative vk/wk >= vl/wl
+
+But y was an optimal solution so this can't be any better 
+new opt solution matches greedy soln on l more index.
+
+
+************************************
+011-Jun10
+______________________________________
+Greedy Algorithm Application on Graphs
+
+Graphs G = (V,E)
+V is a set of vertices
+E is a set of edges
+
+Undirected and Directed Graph
+
+* ---- *
+u      v   u is connected to v, v is connected to u
+
+e = (u,v) = (v,u) unordered pair
+ 
+
+* ----> *
+u       v  u is connected to v, v is not connected to u
+
+e = (u,v) ordered pair
+
+
+We denote n vertices, and m edges
+m could be in O(n^2), O(n) , O(1) 
+_______________
+Basic Notation:
+* adjacent, neighbour, incident
+* path, cycle
+* tree
+* connected
+
+Application: network, wireless, transpotation......
+
+We use adjacent matrix to store the adjacent 
+   1 2 3 4 5
+1[ . . . . .
+2  . . . . .
+3  . . . . .
+4  . . . . .
+5  . . . . .]
+
+0 for no edge, 1 for edge
+
+size:  n^2
+lookup: O(1)
+
+But size is too big if we have a lot of device connects to network.
+And there are more 0's than 1's.
+
+
+We use adjacent list
+
+[1 | 2 | 3 | 4 | .... | n]
+ |
+ v
+[2|4]
+
+space O(n+m)
+lookup: O(n)
+
+
+
+************************************
+012-Jun12
+____________________
+Property of BFS tree
+* shortest paths: BFS finds shortest path from any vertext in the tree to the root
+* use parent array, to find path
+* BFS only finds a connected component,
+  so only valid for undiected connected graph
+
+       BFS
+	.
+      /   \
+distance from s to u and v differ by 1.
+can't be the same or it would be a cross edge
+=> u,v are on the same branch
+
+If for every edge (u,v), dist[u] from s is even and dist[b] from s is odd
+=> bipartite
+
+
+_________________
+DFS - bold search
+go as far as you can, when ther is nothing new to discover, retrace your steps to find something new.
+
+use the stack to store vertices that has been discovered, but now yet completely explored
+we get a DFS tree
+
+(implicit stack) 
+DFS(v):
+   mark(v) <- discovered
+   for each neighbour u of v
+      if u is undiscovered
+	DFS(u)			// tree edge(v,u)
+      else 			// non-tree edge(v,u)
+   end
+     mark[v] <- finish
+
+
+mark all vertices as undiscovered
+for all vertices v
+    if v is undiscovered
+	DFS(v)
+
+DFS tree for each component => forest
+
+************************************
+020-Jul3
+___________________
+Dynamic Programming
+
+_____________________________
+Weighted Interval scheduling
+Greedy solution won't work.
+A general approach to find the OPT(I)---set of intervals in optimal solution
+consider an interval i, 
+* either i is in OPT(I)
+* or not
+
+*If i is in OPT(I) then OPT(I) = {i} union OPT(I') where I' a set of interval disjoint from i
+*If i is not in OPT(I) then OPT(I) = OPT(I - {i})
+
+In either case, the problem is getting smaller.
+
+we want the max of the two possibilities.
+W_OPT(I) = max{W_OPT(I - {i}), W(i) + W_OPT(I')}
+^^^^^^
+sum weight of intervals
+
+In general, T(n) = 2T(n-1) + O(1)  which is in exponential time
+
+	*
+      /   \
+     *     *
+    / \   / \
+   *  *  *   *
+  .............
+
+Essentially we may have to solve subproblems for all 2^n subsets of I
+
+However, if we order intervals by finish time. something nice happen
+
+		|-----------|
+	--------------|
+		-----|
+	--------|
+The the above case: the middle two intervals we will negelect. Since we need disjoint intervals
+
+Intervals disjoint from n are 1 to j, for some j
+For each i, let p(i) = largest index k<i, such that k is disjoint from i.
+
+W_OPT(1 to n) = max(W_OPT(1 to (n -1)), w(n) + W_OPT(1 to p(n)))
+
+More generally,
+* W_OPT(1 to i) = max{W_OPT(1 to (i-1)), w(i) + W_OPT(1 to p(i))}
+
+How do we compute p(i)
+* use sorted finish time i to n
+AND sorted start time s1,...,sn
+
+  j <- n 
+  for k = n to 1
+	while Sk overlaps j  ;do j=j-1
+	P(Sk) <- j
+
+Note: Don't blindly follow the recursion in *
+we may compute the same subproblem over and over
+
+Some high level language save the result - Memoization (scheme does this)
+
+But we want to explicitly see the subproblems and do the analysis
+
+____
+Explicitly keep track of all subproblems
+
+notation M[i] = w_opt(1 to i)
+
+Algorithem
+ M[0] = 0
+ for i = 1 to n
+	M[i] = max{M[i-1],w(i)+M[p(i)]}
+
+Final solution M[n] = W_OPT(1 to n)
+Timing O(n) after sorting
+
+
+How do we find the actual intervals?
+We write a recursive function OPT(i)
+if i = 0 return Empty
+else if M[i-1] >= w(i) + M[p(i)] then return OPT(i-1)
+else return {i} Union OPT(p(i))
+
+
+Key idea of dynamic programming: 
+Identify subproblems (not too many)
+Find an order of solving them (generally bottom up)
+each subproblem can be solved by combining results of a few previously solved problem
+
+
+		
+__________________
+0-1 Knapsack
+given items 1 to n
+item i has weight wi and value vi,
+choose the subset s of item st. sum weight <= w-capacity and sum of value is maximum
+
+First attempt similar to weighted interval distinguish whether item n is IN or OUT 
+* if n is not in S look up for solution 1 to n-1
+* if n is we want subset S' of 1 to n-1 with sum of weight wi (i in s') <= weight - wn
+
+
+subproblems are: one of each pair i,w i in 0,1,...,n 0<=w<= Weight
+
+Find subset of S is contained by {1 to n} sucht that sum weight <= w-capacity and sum of value is maximum
+
+
+************************************
+021-Jul8
+0-1 knapsack
+
+if n in S, then OPT(1..n) = OPT(1..n-1) + vn 
+weight capacity W 		w - vn
+
+subproblems: one for each pair i,w,
+	i = 0,1,2...,n
+	0 <= w <= W
+Find a subset S of {1,..,i} s.t.
+	sum(all i) wi <= w and sum(all i) vi is maximum
+
+
+we create a matrix
+
+	0	1 	2 	3 	..	w 	...	W
+0									<-basecase
+1
+2
+3
+..
+i
+..								OPT(n-1,w)
+n								OPT(n,w)
+
+To solve subproblems for i,w, 
+(1)if wi > w,	OPT(i,w) = OPT(i-1,w), we can't take it.
+(2)else 	OPT(i,w) = max{OPT(i-1,w),OPT(i-1,w-wi)+vi}
+			don't take it	  take it,reduce weight, remember to add vi
+
+
+
+Pseudo code and ordering of subproblems
+store OPT(i,w) in matrix M[0...n,0...W]
+
+Initialize M[0,w] <- 0 for w = 0...W
+
+for i = 1 to n
+	for w = 0 to W
+		M[i,w] = compute using  (1) and (2)
+		
+
+Analysis: O(nWc)
+		c is constant to compute (1)(2)
+Input: w1,...,wn, v1,...,vn,W
+
+suppose W use k bits 2^k
+=> O(n*2^k)
+so its exponential in the input size
+This is not polynomial time!!
+This is actually called pseudo-polynomial.
+
+
+____________________
+Sequence - Alignment (Recall cs240)
+- given large text T, find pattern P
+- find occurence of p in T
+
+What want to find close pattern.
+You: recurance
+Google: did u mean recurrence?
+
+recur|_ance
+recur|rence
+
+add letter, delete 
+mismatch
+
+
+
+Eg. DNA strings letters ATCG
+AACAT
+AAAAG
+
+1) 
+AACAT_
+AA_AAG
+2 gaps 
+1 mismatch
+So: 3 changes
+2)
+AACAT
+AAAAG
+2 mismatchs
+So: 2 changes
+
+problem: given 2 string x1,...,xm and y1,y2,...,yn
+compute the similarity
+ie. find alignment with minimum # of changes
+Idea: start at the end. Either
+* we match xm with yn (paying a mismatch penalty if they don't match)
+or *match xm to blank
+or *match yn to blank
+
+subproblems: for each i,j compute similarity of x1,..,xi, y1....,yi
+Let OPT(i,j) = min # of changes to align x1,...,xi with y1,...yi
+
+OPT(i,j) = min{ OPT(i-1,j-1),		if xi = yi
+		OPT(i-1,j-1)+1,		if xi != yi
+		OPT(i-1,j)+1,		match xi to blank
+		OPT(i,j-1)+1		match yi to blank
+		}
+
+
+
+
+
+************************************
+022-Jul10
+________________________________________________
+Dynamic programming for shortest paths in graphs
+Recall: Dijstra's Algorithm - single source shortest paths
+	no negative weights
+Two problems for today:
+1) all pairs shortest paths
+2) single source shortst paths
+	- allow negative weight 
+	- no negtive weight cycle
+
+
+************************************
+022-Jul17
+____________________________________
+Decision Problems - output yes or no
+P - set of decision problems that are solvable in polynomial time
+	- finish in polynomial time
+	- produce output of Y or N
+NP -a certificate is verifiable in polynomial time
+
+eg. Example of reduction
+
+A = multiplying integers
+B = squaring integers
+
+Obviously, squaring <= p multiplication
+
+plug in two param into multiplication
+
+
+And we can also show multiplacation <= p squaring
+xy = ((x+y)^2 - (x-y)^2)/4
+
+can transform in O(n) time
+
+
+Eg. Two graph theory problems
+______________________________
+Clique-Dec vs Vertex Cover-Dec
+Clique-Dec
+I = (G,k)
+graph G = (V,E)
+v = {v1,v2,...,vn}
+
+1 <= k <= |v|
+
+Does G contain a clique of at least size k?
+
+
+Vertex Cover-Dec
+f(I) = (H,l)
+where H = (V,F)
+vi,vj in E iff vi,vj not in F
+l = n-k or |V|-k
+
+Does H contain a vertex cover of at most size l?
+
+Note: reduce takes polynomial time
+
+We can convert both the above problem to the other.
+
+
+____________
+NP-complete
+A decision problem X is NP-complete if 
+* X in NP
+* for every Y in NP, Y <=p X
+
+ie. X is (one of) the hardest problems in NP
+Important implications
+* if x<= P then P = NP
+* if X cannot be solved in polynomial time, no NP-complete problem can be solved in polynomial time
+P ?=? NP 
+Is P = NP ?
+
+_______________________________________________
+The first NP-Complete problem is harder to show
+* must show that every problem Y in NP reudeces to X
+subsequent NP-completeness proffs are easy, because <=p is transitive,
+ if Y <=p X and X <=p Z then Y <=p Z
+so to prove Z is NP-complete, we just need to prove x <=p Z where X is known NP-compelete problem
+
+
+
+
+
